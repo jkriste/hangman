@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.window.key;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,13 +40,24 @@ public final class KeySelector {
     }
 
     /**
-     * Groups an array of {@link Key}s together.
+     * Adds the given array of {@link Key}s to the builder.
      *
      * @param keys The keys to add to the set.
      * @return The current {@link KeySelector} instance.
      */
     public KeySelector group(Key[] keys) {
         Collections.addAll(this.selectedKeys, keys);
+        return this;
+    }
+
+    /**
+     * Adds the given {@link Collection} of {@link Key}s to the builder.
+     *
+     * @param keys The keys to add to the set.
+     * @return The current {@link KeySelector} instance.
+     */
+    public KeySelector group(Collection<Key> keys) {
+        this.selectedKeys.addAll(keys);
         return this;
     }
 

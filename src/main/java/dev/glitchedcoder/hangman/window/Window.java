@@ -6,6 +6,7 @@ import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.util.Constants;
 
+import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
@@ -27,27 +28,17 @@ public final class Window extends JFrame implements Runnable, FocusListener {
 
     private final View view;
 
+    private static final short MS_IN_S = 1000;
     private static final byte FRAMES_PER_SECOND = 30;
 
     public Window(View view) {
         this.view = view;
         this.running = false;
-        Resolution resolution = Config.getConfig().getResolution();
-        Dimension d = new Dimension(resolution.getWidth(), resolution.getHeight());
-        setSize(d);
-        setMinimumSize(d);
-        setMaximumSize(d);
-        setPreferredSize(d);
+        add(view);
+        adjustResolution(Config.getConfig().getResolution());
         setResizable(false);
         setTitle(Constants.TITLE + " v" + Constants.VERSION);
         setIconImage(Texture.EXECUTIONER.asImage());
-        Insets insets = getInsets();
-        // get the usable width & height for the view
-        final Dimension usable = new Dimension(d.width, d.height - insets.top - insets.bottom);
-        view.adjustDimensions(usable);
-        Scene.adjustDimensions(usable);
-        Location.adjustDimensions(usable);
-        add(view);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addFocusListener(this);
         addWindowListener(new WindowAdapter() {
@@ -67,11 +58,12 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         final double TIME_BETWEEN_UPDATES = 1000000000D / FRAMES_PER_SECOND;
         double lastUpdate = System.nanoTime();
         double lastRender;
+        long timer = System.currentTimeMillis();
+        byte updateCount = 0;
         setVisible(true);
         requestFocus();
         while (running) {
             double now = System.nanoTime();
-            byte updateCount = 0;
             while (now - lastUpdate > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES) {
                 view.tick(updateCount);
                 lastUpdate += TIME_BETWEEN_UPDATES;
@@ -90,6 +82,10 @@ public final class Window extends JFrame implements Runnable, FocusListener {
                     Thread.currentThread().interrupt();
                 }
                 now = System.nanoTime();
+            }
+            if ((System.currentTimeMillis() - timer) > MS_IN_S) {
+                timer = System.currentTimeMillis();
+                updateCount = 0;
             }
         }
         view.close();
@@ -113,5 +109,41 @@ public final class Window extends JFrame implements Runnable, FocusListener {
      */
     public void stop() {
         this.running = false;
+    }
+
+    /**
+     * Adjusts the {@link Resolution} of the {@link Window}.
+     * <br />
+     * Finds the {@link Dimension}s of the usable window
+     * and subsequently passes these {@link Dimension}s
+     * off to {@link View}, {@link Scene}, and {@link Location}.
+     *
+     * @param resolution The new resolution.
+     */
+    public void adjustResolution(@Nonnull Resolution resolution) {
+        Dimension d = new Dimension(resolution.getWidth(), resolution.getHeight());
+        setSize(d);
+        setMinimumSize(d);
+        setMaximumSize(d);
+        setPreferredSize(d);
+        Insets insets = getInsets();
+        // get the usable width & height for the view
+        Dimension usable = new Dimension(d.width, d.height - insets.top - insets.bottom);
+        view.adjustDimensions(usable);
+        Scene.adjustDimensions(usable);
+        Location.adjustDimensions(usable);
+    }
+
+    /**
+     * Gets the {@link View}.
+     * <br />
+     * Used by the {@link Scene} as a shortcut
+     * for changing the current {@link Scene}
+     * displayed in the {@link View}.
+     *
+     * @return The {@link View}.
+     */
+    View getView() {
+        return this.view;
     }
 }

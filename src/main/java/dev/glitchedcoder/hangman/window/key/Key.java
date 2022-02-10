@@ -35,6 +35,16 @@ public enum Key {
     X(KeyEvent.VK_X),
     Y(KeyEvent.VK_Y),
     Z(KeyEvent.VK_Z),
+    N0(KeyEvent.VK_0),
+    N1(KeyEvent.VK_1),
+    N2(KeyEvent.VK_2),
+    N3(KeyEvent.VK_3),
+    N4(KeyEvent.VK_4),
+    N5(KeyEvent.VK_5),
+    N6(KeyEvent.VK_6),
+    N7(KeyEvent.VK_7),
+    N8(KeyEvent.VK_8),
+    N9(KeyEvent.VK_9),
     ESCAPE(KeyEvent.VK_ESCAPE),
     BACKSPACE(KeyEvent.VK_BACK_SPACE),
     ARROW_UP(KeyEvent.VK_UP),
@@ -47,6 +57,7 @@ public enum Key {
 
     public static final Key[] ALL_KEYS = values();
     public static final Key[] ARROW_KEYS = { ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, ARROW_UP };
+    public static final Key[] NUMBERS = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
     public static final Key[] ALPHABET = { A, B, C, D, E, F, G, H, I,
                                            J, K, L, M, N, O, P, Q, R,
                                            S, T, U, V, W, X, Y, Z };

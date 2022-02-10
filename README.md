@@ -11,15 +11,16 @@ The word randomly chosen will vary by length but are usually limited to nouns an
 
 ## Planned Features
 
-- Story Mode: The user v. The Executioner
-- Singleplayer option where a word is chosen based on either random or specified length.
+- Single-player:
+  - Story Mode: The user v. The Executioner
+  - Free Mode: A word is chosen based on either random or specified length.
 - Multiplayer option where a user can input a word and another guesses the word put in.
 - Custom-built (this means it's going to be bad) game engine by yours truly.
 - Custom font and game assets also by yours truly.
 
 ## Possible Features
 
-- A story-driven Inscryption-like theme where YOU, the user, are the man to be hanged, while your antagonist is the executioner.
+- Items awarded for progressing such as hints and extra lives?
 
 ## Nerd Stuff
 
@@ -42,20 +43,20 @@ This app does indeed store preferences (and possibly the last thing you were doi
 Where this data is located depends on your OS:
 - Windows: `C:\Users\YOUR_USERNAME\AppData\Roaming\Hanged Men Data`
 - MacOS: `/Users/YOUR_USERNAME/Library/ApplicationSupport/Hanged Men Data`
-- Linux: `/home/YOUR_USERNAME/.Hanged Man Data`
+- Linux: `/home/YOUR_USERNAME/Hanged Men Data`
 
 As of the writing of this, the following files are stored:
 - `config.json` - This file stores preferences such as API Key and resolution.
 
 ### TODO
 
-- Change game loop to correctly count ticks.
+- Change game loop to correctly count ticks. ✔️
 - Start on API requests using some kind of library?
 - Figure out what is going on with `AudioSystem.getClip()`
   - `IOException: Stream closed`
-  - `Unsupported control type: Master Gain`
-- Work on texture pre-processing (most likely limited to buffered images).
-- Start on menus and menu components.
+  - `Unsupported control type: Master Gain` ✔️
+- Work on texture pre-processing (most likely limited to buffered images). ✔️
+- Start on menus and menu components. ✔️
   - Main menu.
   - Preferences menu.
   - Credits
@@ -66,4 +67,6 @@ As of the writing of this, the following files are stored:
   - TextBox
 - Assets for various scenes.
   - Maybe a GitHub logo?
+- Documentation!
+  - Make sure to get methods that use `Validator#...` and add `@throws IllegalArgumentException ...` to it.
 - Possibly make Scene serializable and store & load the previous scene from local data (i.e., a `CONTINUE` menu option)?

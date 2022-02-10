@@ -30,12 +30,30 @@ public final class View extends Canvas {
         this.scene = new AtomicReference<>(null);
     }
 
+    /**
+     * Ticks the {@link View}.
+     * <br />
+     * Tells the {@link Scene} to update and
+     * subsequently calls {@link Scene#tick(byte)}.
+     *
+     * @param count The current tick/frame count.
+     * @throws IllegalArgumentException Thrown if the current scene is null.
+     */
     public void tick(byte count) {
         Scene scene = getScene();
         Validator.requireNotNull(scene, "Current scene is null!");
         scene.tick(count);
     }
 
+    /**
+     * Draws the {@link View}.
+     * <br />
+     * If no {@link BufferStrategy} exists, this method
+     * creates a double-{@link BufferStrategy}.
+     * Gets the {@link Graphics2D} object and applies
+     * {@link RenderingHints}. Draws the background of the
+     * {@link Scene} and then passes it on to {@link Scene}.
+     */
     public void draw() {
         BufferStrategy strategy = getBufferStrategy();
         if (strategy == null) {
@@ -53,6 +71,11 @@ public final class View extends Canvas {
         strategy.show();
     }
 
+    /**
+     * Gets the current {@link Scene} of the {@link View}.
+     *
+     * @return The current {@link Scene} of the {@link View}.
+     */
     public synchronized Scene getScene() {
         return scene.get();
     }
@@ -73,8 +96,8 @@ public final class View extends Canvas {
      */
     public synchronized void setScene(@Nonnull Scene scene) {
         Validator.requireNotNull(scene, "Given scene is null!");
-        if (getScene() != null) {
-            Scene current = getScene();
+        Scene current = getScene();
+        if (current != null) {
             Validator.checkArgument(!current.equals(scene), "Given scene is same as current scene.");
             KEYBOARD_MANAGER.removeKeyEventDispatcher(current);
             current.onUnload();
@@ -93,7 +116,10 @@ public final class View extends Canvas {
      * @param event The focus event.
      */
     void focusLost(FocusEvent event) {
-        getScene().focusLost(event);
+        Scene scene = getScene();
+        if (scene == null)
+            return;
+        scene.focusLost(event);
     }
 
     /**
@@ -105,7 +131,10 @@ public final class View extends Canvas {
      * @param event The focus event.
      */
     void focusGained(FocusEvent event) {
-        getScene().focusGained(event);
+        Scene scene = getScene();
+        if (scene == null)
+            return;
+        scene.focusGained(event);
     }
 
     /**

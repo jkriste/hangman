@@ -20,6 +20,8 @@ public enum Resolution implements Serializable {
     private final short height;
     private final double scalar;
 
+    public static final Resolution[] values = values();
+
     Resolution(String name, int width, int height, double scalar) {
         this.name = name;
         this.width = (short) width;

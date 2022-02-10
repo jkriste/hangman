@@ -1,7 +1,9 @@
 package dev.glitchedcoder.hangman.window;
 
 import dev.glitchedcoder.hangman.Hangman;
+import dev.glitchedcoder.hangman.entity.RenderPriority;
 import dev.glitchedcoder.hangman.entity.Renderable;
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.sound.Sound;
 import dev.glitchedcoder.hangman.sound.Volume;
 import dev.glitchedcoder.hangman.util.Validator;
@@ -11,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import javax.annotation.Nonnull;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,10 +38,11 @@ public abstract class Scene implements KeyEventDispatcher {
 
     private final UUID id;
     private final AtomicReference<Color> bg;
-    protected final List<Renderable> renderables;
+    private final List<Renderable> renderables;
     protected final ScheduledExecutorService executor = Hangman.getExecutor();
 
     protected static Dimension dimension;
+    protected static final Config config = Config.getConfig();
 
     protected Scene() {
         this.id = UUID.randomUUID();
@@ -136,24 +140,74 @@ public abstract class Scene implements KeyEventDispatcher {
     }
 
     /**
-     * Plays the given {@link Sound} at the given {@link Volume}.
-     *
-     * TODO: Remove volume param & substitute global value / config value
+     * Plays the given {@link Sound}.
+     * <br />
+     * The sound's {@link FloatControl.Type#MASTER_GAIN} will be
+     * adjusted based on the {@link Volume} stored in the {@link Config}.
+     * <br />
+     * Depending on the OS and JRE, a {@link Sound} may not play
+     * at all or the {@link Volume} (even when adjusted in-game)
+     * will not be changed.
      *
      * @param sound The sound to play.
-     * @param volume The volume to play the sound at.
+     * @throws IllegalArgumentException Thrown if the given sound is null.
      */
-    protected final void playSound(Sound sound, Volume volume) {
+    protected final void playSound(@Nonnull Sound sound) {
+        Validator.requireNotNull(sound, "Given sound is null!");
         try (Clip clip = AudioSystem.getClip()) {
             if (clip.isRunning())
                 clip.stop();
-//            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-//            gainControl.setValue(volume.getGain());
+            if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                gainControl.setValue(config.getVolume().getGain());
+            }
             clip.open(sound.asStream());
             clip.start();
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A shortcut for setting the current {@link Scene}.
+     * <br />
+     * Gets the {@link View} of the {@link Window} and
+     * passes the given {@link Scene} onto it.
+     *
+     * @param scene The scene to set.
+     */
+    protected final void setScene(@Nonnull Scene scene) {
+        Validator.requireNotNull(scene, "Given scene is null!");
+        View view = Hangman.getWindow().getView();
+        view.setScene(scene);
+    }
+
+    /**
+     * Adds the given {@link Renderable} object to the {@link Scene}.
+     * <br />
+     * Used to sort all {@link #renderables} by {@link RenderPriority}.
+     *
+     * @param renderable The renderable object to add.
+     */
+    protected final void addRenderable(@Nonnull Renderable renderable) {
+        Validator.requireNotNull(renderable, "Given renderable is null!");
+        this.renderables.add(renderable);
+        Collections.sort(this.renderables);
+    }
+
+    /**
+     * Adds the given {@link Renderable} objects to the {@link Scene}.
+     * <br />
+     * Used to sort all {@link #renderables} by {@link RenderPriority}.
+     *
+     * @param renderables The renderable objects to add.
+     */
+    protected final void addRenderables(@Nonnull Renderable... renderables) {
+        Validator.requireNotNull(renderables, "Given renderables array is null!");
+        if (renderables.length == 0)
+            return;
+        Collections.addAll(this.renderables, renderables);
+        Collections.sort(this.renderables);
     }
 
     /**

@@ -278,29 +278,71 @@ public final class Location {
         this.y -= y;
     }
 
+    /**
+     * Multiplies the current location by the given scalar.
+     * <br />
+     * Usually used to scale objects based on resolution.
+     *
+     * @param scalar The amount to scale the location by.
+     */
     public void mul(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
     }
 
+    /**
+     * Gets the distance between the current {@link Location}
+     * instance and the given {@link Location}.
+     *
+     * @param loc The location to compare.
+     * @return The distance between the two locations.
+     */
     public double dist(@Nonnull Location loc) {
         return Math.sqrt(distSqr(loc));
     }
 
+    /**
+     * Gets the width between the current {@link Location}
+     * instance and the given {@link Location}.
+     *
+     * @param loc The location to compare.
+     * @return The width between the two locations.
+     */
     public int distX(@Nonnull Location loc) {
         return Math.abs(this.x - loc.x);
     }
 
+    /**
+     * Gets the height between the current {@link Location}
+     * instance and the given {@link Location}.
+     *
+     * @param loc The location to compare.
+     * @return The height between the two locations.
+     */
     public int distY(@Nonnull Location loc) {
         return Math.abs(this.y - loc.y);
     }
 
+    /**
+     * Gets the distance squared between the current
+     * {@link Location} instance and the given {@link Location}.
+     *
+     * @param loc The location to compare.
+     * @return The distance squared between the two locations.
+     */
     public double distSqr(@Nonnull Location loc) {
         int x = this.x - loc.x;
         int y = this.y - loc.y;
         return Math.pow(x, 2) + Math.pow(y, 2);
     }
 
+    /**
+     * Gets the midpoint between the current instance
+     * and the given {@link Location} instance.
+     *
+     * @param loc The location to compare.
+     * @return The midpoint between the two {@link Location}s.
+     */
     public Location getMidpoint(@Nonnull Location loc) {
         Validator.requireNotNull(loc, "Given loc is null!");
         int x = Math.round((this.x + loc.x) / 2F);

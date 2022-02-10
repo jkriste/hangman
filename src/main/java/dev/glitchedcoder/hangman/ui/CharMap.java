@@ -94,9 +94,25 @@ public enum CharMap {
     }
 
     /**
+     * Translates the given character to a {@link BufferedImage}.
+     * <br />
+     * If the given character is not in the lookup, i.e., an
+     * invalid {@link Texture}, an {@link IllegalArgumentException}
+     * will be thrown.
+     *
+     * @param c The character to translate.
+     * @return The given character as a {@link BufferedImage}.
+     * @throws IllegalArgumentException Thrown if the given char does not exist as a texture.
+     */
+    public static BufferedImage translate(char c) {
+        Validator.requireNotNull(LOOKUP.containsKey(c), "Invalid character given on translation: '{}'!", c);
+        return LOOKUP.get(c).asImage();
+    }
+
+    /**
      * Translates the given string to a same-sized array of {@link BufferedImage}s.
      * <br />
-     * If a given character is not in the lookup, i.e., a valid {@link Texture},
+     * If a given character is not in the lookup, i.e., an invalid {@link Texture},
      * an {@link IllegalArgumentException} will be thrown.
      *
      * @param s The string to translate.

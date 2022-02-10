@@ -1,4 +1,4 @@
-package dev.glitchedcoder.hangman.window;
+package dev.glitchedcoder.hangman.entity;
 
 import lombok.EqualsAndHashCode;
 

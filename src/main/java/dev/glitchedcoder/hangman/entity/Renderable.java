@@ -1,7 +1,5 @@
 package dev.glitchedcoder.hangman.entity;
 
-import dev.glitchedcoder.hangman.window.RenderPriority;
-
 import javax.annotation.Nonnull;
 import java.awt.Graphics2D;
 import java.util.UUID;
