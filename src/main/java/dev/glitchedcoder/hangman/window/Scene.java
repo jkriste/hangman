@@ -153,13 +153,17 @@ public abstract class Scene implements KeyEventDispatcher {
      * @throws IllegalArgumentException Thrown if the given sound is null.
      */
     protected final void playSound(@Nonnull Sound sound) {
+        Volume volume = config.getVolume();
+        if (volume == Volume.MUTE)
+            return;
         Validator.requireNotNull(sound, "Given sound is null!");
         try (Clip clip = AudioSystem.getClip()) {
             if (clip.isRunning())
                 clip.stop();
             if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                System.out.println("GAIN");
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(config.getVolume().getGain());
+                gainControl.setValue(volume.getGain());
             }
             clip.open(sound.asStream());
             clip.start();

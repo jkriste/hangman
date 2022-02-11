@@ -62,7 +62,9 @@ public enum Texture {
     QUESTION_MARK("question_mark"),
     AND("and"),
     SOLID_LEFT_ARROW("solid_left_arrow"),
-    SOLID_RIGHT_ARROW("solid_right_arrow");
+    SOLID_RIGHT_ARROW("solid_right_arrow"),
+    UNDERSCORE("underscore"),
+    SELF_PORTRAIT("self_portrait");
 
     private final String loc;
 

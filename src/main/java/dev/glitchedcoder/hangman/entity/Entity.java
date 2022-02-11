@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Scene;
 
@@ -22,9 +23,11 @@ public abstract class Entity implements Renderable {
     private volatile boolean visible;
     private volatile boolean shouldRemove;
 
+    protected static final Config CONFIG = Config.getConfig();
+
     @ParametersAreNonnullByDefault
-    protected Entity(Scene view, EntityType type) {
-        this(view, type, new Location());
+    protected Entity(Scene scene, EntityType type) {
+        this(scene, type, new Location());
     }
 
     @ParametersAreNonnullByDefault

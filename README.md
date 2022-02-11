@@ -9,6 +9,9 @@ For each incorrect letter or guess, a stick figure drawing representing a hanged
 If the user solves the word either by guessing the correct letter or by guessing the correct word before the hangman drawing is complete, they win. 
 The word randomly chosen will vary by length but are usually limited to nouns and verbs.
 
+Although I am not very good with drawing assets, all of the assets found [here](https://github.com/glitchedcoder/hangman/tree/main/src/main/resources/texture) were hand-drawn in Photoshop.
+This game is meant to portray a sort of arcade-like feel, with 
+
 ## Planned Features
 
 - Single-player:
@@ -26,7 +29,9 @@ The word randomly chosen will vary by length but are usually limited to nouns an
 
 This section of the README will include all the technical details of this project.
 
-**Language**: Java 11 
+**Language**: Java
+<br />
+**JDK**: AdoptOpenJDK (HostSpot) version 11.0.11
 <br />
 **Build System**: Maven
 <br />
@@ -59,11 +64,10 @@ As of the writing of this, the following files are stored:
 - Start on menus and menu components. ✔️
   - Main menu.
   - Preferences menu.
-  - Credits
 - Entity types:
-  - FadeIn (implement w/ Callback)
-  - FadeOut (implement w/ Callback)
-  - Text
+  - FadeIn (implement w/ Callback) ✔️
+  - FadeOut (implement w/ Callback) ✔️
+  - Text ✔️
   - TextBox
 - Assets for various scenes.
   - Maybe a GitHub logo?

@@ -63,7 +63,7 @@ public final class Config {
      * new instance of Config with the default values:
      * <br />
      * {@code
-     * { "apiKey": "", "resolution": "P576" }
+     * { "apiKey": "", "resolution": "P576", "volume": "NORMAL" }
      * }
      * <br />
      * If the config file exists, it will be loaded as the class instance.

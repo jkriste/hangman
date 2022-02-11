@@ -6,6 +6,7 @@ public enum EntityType {
     MENU_COMPONENT,
     TEXT_BOX,
     FADE_IN,
-    FADE_OUT
+    FADE_OUT,
+    FIXED_TEXTURE
 
 }

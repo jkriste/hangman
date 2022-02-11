@@ -2,12 +2,15 @@ package dev.glitchedcoder.hangman.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.glitchedcoder.hangman.Hangman;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Locale;
 
 public final class Constants {
 
+    public static final File JAR;
     public static final Gson GSON;
     public static final String API_URL;
     public static final File CONFIG_FILE;
@@ -34,7 +37,21 @@ public final class Constants {
                 .setLenient()
                 .create();
         API_URL = "https://clemsonhackman.com/api/word";
+        File jar;
+        try {
+            jar = new File(Hangman.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            jar = null;
+        }
+        JAR = jar;
         System.out.println(CONFIG_FILE.getAbsolutePath());
+        Validator.requireNotNull(JAR, "Could not get JAR location!");
+        System.out.println(JAR.getAbsolutePath());
     }
 
     private Constants() {

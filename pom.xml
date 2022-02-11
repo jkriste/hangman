@@ -36,6 +36,12 @@
     <build>
         <defaultGoal>clean test package install</defaultGoal>
         <finalName>${project.name}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Compiler -->
             <plugin>

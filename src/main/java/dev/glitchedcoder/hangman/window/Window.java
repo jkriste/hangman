@@ -29,7 +29,7 @@ public final class Window extends JFrame implements Runnable, FocusListener {
     private final View view;
 
     private static final short MS_IN_S = 1000;
-    private static final byte FRAMES_PER_SECOND = 30;
+    private static final byte FRAMES_PER_SECOND = 10;
 
     public Window(View view) {
         this.view = view;
@@ -54,7 +54,6 @@ public final class Window extends JFrame implements Runnable, FocusListener {
     @Override
     public void run() {
         this.running = true;
-        final byte MAX_UPDATES = 5;
         final double TIME_BETWEEN_UPDATES = 1000000000D / FRAMES_PER_SECOND;
         double lastUpdate = System.nanoTime();
         double lastRender;
@@ -64,7 +63,7 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         requestFocus();
         while (running) {
             double now = System.nanoTime();
-            while (now - lastUpdate > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES) {
+            while (now - lastUpdate > TIME_BETWEEN_UPDATES && updateCount < FRAMES_PER_SECOND) {
                 view.tick(updateCount);
                 lastUpdate += TIME_BETWEEN_UPDATES;
                 updateCount++;
@@ -120,15 +119,17 @@ public final class Window extends JFrame implements Runnable, FocusListener {
      *
      * @param resolution The new resolution.
      */
-    public void adjustResolution(@Nonnull Resolution resolution) {
+    private void adjustResolution(@Nonnull Resolution resolution) {
         Dimension d = new Dimension(resolution.getWidth(), resolution.getHeight());
         setSize(d);
-        setMinimumSize(d);
-        setMaximumSize(d);
         setPreferredSize(d);
+        pack();
         Insets insets = getInsets();
         // get the usable width & height for the view
-        Dimension usable = new Dimension(d.width, d.height - insets.top - insets.bottom);
+        int newWidth = d.width - insets.left - insets.right;
+        int newHeight = d.height - insets.top - insets.bottom;
+        Dimension usable = new Dimension(newWidth, newHeight);
+        System.out.println("newHeight: " + newHeight + ", newWidth: " + newWidth);
         view.adjustDimensions(usable);
         Scene.adjustDimensions(usable);
         Location.adjustDimensions(usable);

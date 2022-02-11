@@ -32,7 +32,8 @@ public final class Hangman {
         new Thread(window).start();
     }
 
-    public static void exit() {
+    public static synchronized void exit() {
+        Config.saveConfig();
         window.stop();
         executor.shutdown();
         try {

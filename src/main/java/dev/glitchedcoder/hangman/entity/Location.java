@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Window;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ public final class Location {
     private short y;
 
     private static Dimension dimension;
+    private static final Config CONFIG = Config.getConfig();
 
     public Location() {
         this(0, 0);
@@ -206,6 +208,7 @@ public final class Location {
     public static void adjustDimensions(@Nonnull Dimension d) {
         Validator.requireNotNull(d, "Given dimension is null!");
         dimension = d;
+        System.out.println("w: " + d.width + ", h: " + d.height);
     }
 
     /**
@@ -348,5 +351,10 @@ public final class Location {
         int x = Math.round((this.x + loc.x) / 2F);
         int y = Math.round((this.y + loc.y) / 2F);
         return new Location(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "x: " + this.x + ", y: " + this.y;
     }
 }
