@@ -1,6 +1,5 @@
 package dev.glitchedcoder.hangman.scene;
 
-import dev.glitchedcoder.hangman.entity.Entity;
 import dev.glitchedcoder.hangman.entity.FadeIn;
 import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
@@ -9,6 +8,7 @@ import dev.glitchedcoder.hangman.scene.menu.MainMenu;
 import dev.glitchedcoder.hangman.sound.Sound;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
+import dev.glitchedcoder.hangman.util.ApiRequest;
 import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.key.Key;
 import dev.glitchedcoder.hangman.window.key.KeySelector;
@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
 public class Splash extends Scene {
@@ -48,31 +47,23 @@ public class Splash extends Scene {
     protected void onLoad() {
         setBackground(Color.WHITE);
         addRenderables(fadeIn, fadeOut, text, portrait);
-        fadeIn.spawn();
-        text.spawn();
-        portrait.spawn();
+        spawnAll(fadeIn, text, portrait);
+        executor.schedule(() -> playSound(Sound.SPLASH_SOUND), 2, TimeUnit.SECONDS);
         fadeIn.onFinish(() -> {
-            playSound(Sound.SPLASH_SOUND);
             fadeIn.dispose();
             executor.schedule(fadeOut::spawn, 1, TimeUnit.SECONDS);
         });
         fadeOut.onFinish(() -> {
-            // todo: check if api key is valid
-            if (config.getApiKey().isEmpty())
-                setScene(new ApiKeyEntry());
-            else
+            if (ApiRequest.checkApiKey())
                 setScene(new MainMenu());
+            else
+                setScene(new ApiKeyEntry());
         });
     }
 
     @Override
     protected void onUnload() {
-        Stream.of(
-                fadeIn,
-                fadeOut,
-                text,
-                portrait
-        ).forEach(Entity::dispose);
+        disposeAll(fadeOut, fadeIn, text, portrait);
     }
 
     @Override

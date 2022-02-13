@@ -7,6 +7,8 @@ public enum EntityType {
     TEXT_BOX,
     FADE_IN,
     FADE_OUT,
-    FIXED_TEXTURE
+    FIXED_TEXTURE,
+    CHARACTER_INPUT,
+    TEXT_INPUT
 
 }

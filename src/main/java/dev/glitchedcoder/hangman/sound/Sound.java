@@ -16,7 +16,8 @@ public enum Sound {
     SPLASH_SOUND("splash_sound"),
     INVALID_SELECTION("invalid_selection"),
     MENU_SELECT("menu_select"),
-    MENU_MOVE("menu_move");
+    MENU_MOVE("menu_move"),
+    KEY_PRESS("key_press");
 
     private final String loc;
 
@@ -30,7 +31,6 @@ public enum Sound {
         Validator.requireNotNull(in, "InputStream for sound '{}' returned null.", name());
         BufferedInputStream bufferedIn = new BufferedInputStream(in);
         try {
-            System.out.println(bufferedIn.available()); // 30950
             return AudioSystem.getAudioInputStream(bufferedIn);
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();

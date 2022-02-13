@@ -161,12 +161,15 @@ public abstract class Scene implements KeyEventDispatcher {
             if (clip.isRunning())
                 clip.stop();
             if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                System.out.println("GAIN");
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(volume.getGain());
             }
             clip.open(sound.asStream());
             clip.start();
+            while(clip.getMicrosecondLength() != clip.getMicrosecondPosition())
+            {
+                // todo: LineListener
+            }
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
@@ -212,6 +215,30 @@ public abstract class Scene implements KeyEventDispatcher {
             return;
         Collections.addAll(this.renderables, renderables);
         Collections.sort(this.renderables);
+    }
+
+    /**
+     * A QoL method that {@link Renderable#spawn() spawns} all
+     * of the given {@link Renderable} objects.
+     *
+     * @param renderables The renderable objects to spawn.
+     */
+    protected final void spawnAll(@Nonnull Renderable... renderables) {
+        Validator.requireNotNull(renderables, "Given renderables array is null!");
+        for (Renderable renderable : renderables)
+            renderable.spawn();
+    }
+
+    /**
+     * A QoL method that {@link Renderable#dispose() disposes}
+     * all of the given {@link Renderable} objects.
+     *
+     * @param renderables The renderable objects to dispose of.
+     */
+    protected final void disposeAll(@Nonnull Renderable... renderables) {
+        Validator.requireNotNull(renderables, "Given renderables array is null!");
+        for (Renderable renderable : renderables)
+            renderable.dispose();
     }
 
     /**
