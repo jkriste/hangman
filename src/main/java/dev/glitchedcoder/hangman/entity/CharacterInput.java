@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.window.Scene;
 
@@ -20,8 +21,16 @@ public class CharacterInput extends Entity {
     private final boolean space;
     private final Rectangle bounds;
 
-    private static final Color LOCKED_COLOR = Color.GREEN;
-    private static final Color UNLOCKED_COLOR = Color.WHITE;
+    private static final byte SPACE_BETWEEN;
+    private static final Color LOCKED_COLOR;
+    private static final Color UNLOCKED_COLOR;
+
+    static {
+        LOCKED_COLOR = Color.GREEN;
+        UNLOCKED_COLOR = Color.WHITE;
+        Config config = Config.getConfig();
+        SPACE_BETWEEN = (byte) (16 * config.getResolution().getScalar());
+    }
 
     CharacterInput(Scene scene, double scalar, boolean space) {
         super(scene, EntityType.CHARACTER_INPUT);
@@ -61,7 +70,7 @@ public class CharacterInput extends Entity {
     public void draw(@Nonnull Graphics2D graphics) {
         graphics.drawImage(underscore, getLocation().getX(), getLocation().getY(), null);
         if (!isEmpty())
-            graphics.drawImage(texture, getLocation().getX(), getLocation().getY() - 15, null);
+            graphics.drawImage(texture, getLocation().getX(), getLocation().getY() - SPACE_BETWEEN, null);
     }
 
     public void setLocked(boolean locked) {

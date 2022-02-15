@@ -1,6 +1,7 @@
 package dev.glitchedcoder.hangman;
 
 import dev.glitchedcoder.hangman.json.Config;
+import dev.glitchedcoder.hangman.json.Script;
 import dev.glitchedcoder.hangman.scene.Splash;
 import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.View;
@@ -18,6 +19,7 @@ public final class Hangman {
     public static void main(String[] args) {
         executor = Executors.newSingleThreadScheduledExecutor();
         Config.loadConfig();
+        Script.loadScript();
         View view = new View();
         /*
          * it is important that a Window instance

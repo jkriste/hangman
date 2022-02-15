@@ -12,17 +12,17 @@ public final class RenderPriority implements Comparable<RenderPriority> {
     public static final RenderPriority MAX;
 
     static {
-        MIN = new RenderPriority((byte) -128);
-        LOW = new RenderPriority((byte) -64);
-        NORMAL = new RenderPriority((byte) 0);
-        HIGH = new RenderPriority((byte) 64);
-        MAX = new RenderPriority((byte) 127);
+        MIN = new RenderPriority(-128);
+        LOW = new RenderPriority(-64);
+        NORMAL = new RenderPriority(0);
+        HIGH = new RenderPriority(64);
+        MAX = new RenderPriority(127);
     }
 
     private final byte priority;
 
-    public RenderPriority(byte priority) {
-        this.priority = priority;
+    public RenderPriority(int priority) {
+        this.priority = (byte) priority;
     }
 
     public byte getPriority() {

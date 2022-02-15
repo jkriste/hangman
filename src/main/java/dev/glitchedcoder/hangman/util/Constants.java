@@ -13,6 +13,7 @@ public final class Constants {
     public static final File JAR;
     public static final Gson GSON;
     public static final String API_URL;
+    public static final File SCRIPT_FILE;
     public static final File CONFIG_FILE;
     public static final File APPDATA_DIR;
     public static final byte MIN_WORD_LENGTH;
@@ -39,21 +40,20 @@ public final class Constants {
                 .setLenient()
                 .create();
         API_URL = "https://clemsonhackman.com/api/word";
-        File jar;
+        File jar = null;
+        File script = null;
         try {
             jar = new File(Hangman.class
                     .getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
                     .toURI());
+            script = new File(Hangman.class.getResource("/script/script.json").toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            jar = null;
         }
-        JAR = jar;
-        System.out.println(CONFIG_FILE.getAbsolutePath());
-        Validator.requireNotNull(JAR, "Could not get JAR location!");
-        System.out.println(JAR.getAbsolutePath());
+        SCRIPT_FILE = Validator.requireNotNull(script);
+        JAR = Validator.requireNotNull(jar);
         MIN_WORD_LENGTH = 4;
         MAX_WORD_LENGTH = 14;
     }

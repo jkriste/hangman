@@ -1,6 +1,5 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -15,11 +14,6 @@ public class MainMenu extends Menu {
     @Override
     protected List<MenuComponent> getComponents() {
         return null;
-    }
-
-    @Override
-    protected void select(@Nonnull MenuComponent component) {
-
     }
 
     @Override

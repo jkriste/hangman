@@ -14,8 +14,8 @@ import java.awt.image.BufferedImage;
 @EqualsAndHashCode(callSuper = true)
 public class FixedTexture extends Entity {
 
-    private final Rectangle bounds;
-    private final BufferedImage image;
+    private Rectangle bounds;
+    private BufferedImage image;
 
     @ParametersAreNonnullByDefault
     public FixedTexture(Scene scene, Texture texture) {
@@ -56,5 +56,18 @@ public class FixedTexture extends Entity {
     @Override
     public void draw(@Nonnull Graphics2D graphics) {
         graphics.drawImage(this.image, getLocation().getX(), getLocation().getY(), null);
+    }
+
+    public void setTexture(@Nonnull Texture texture) {
+        Validator.requireNotNull(texture, "Given texture is null!");
+        BufferedImage image = texture.asImage();
+        Validator.requireNotNull(image, "Could not load texture '{}'!", texture.name());
+        this.image = image;
+        this.bounds = new Rectangle(image.getWidth(), image.getHeight());
+    }
+
+    public void setImage(@Nonnull BufferedImage image) {
+        Validator.requireNotNull(image, "Given image is null!");
+
     }
 }

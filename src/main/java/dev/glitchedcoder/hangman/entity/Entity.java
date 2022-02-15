@@ -23,8 +23,6 @@ public abstract class Entity implements Renderable {
     private volatile boolean visible;
     private volatile boolean shouldRemove;
 
-    protected static final Config CONFIG = Config.getConfig();
-
     @ParametersAreNonnullByDefault
     protected Entity(Scene scene, EntityType type) {
         this(scene, type, new Location());

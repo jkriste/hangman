@@ -21,15 +21,19 @@ Additional thanks to [Korey](https://github.com/kspalm) and [Dr. Dean](https://p
 ### How to Run
 
 This game is developed in Java, specifically compiled by AdoptOpenJDK (HostSpot) version 11.0.11.
-However, you do not need this specific release of Java 11 to run this game.
+However, you do not need this specific release of Java to run this game.
+Any Java release after 11 is capable of running the game thanks to backwards compatability.
 In order to check if you already have the Java 11 JRE installed, you can run the command `java -version` from your preferred terminal.
 
 If you get an output similar to the following, then you're set to start.
-![Java Version](https://i.imgur.com/CnZo635.png)
+<br />
+Make sure that the major version (highlighted below) is at or greater than 11.
+
+![Java Version](https://i.imgur.com/KEN7pfz.png)
 
 If not, you can download the AdoptOpenJDK v11 [here](https://adoptopenjdk.net/archive.html).
 
-After you get the above output, you get the [latest releases](https://github.com/glitchedcoder/hangman/releases) by going to the assets and clicking the `Hanged Men.jar` file.
+After you get the above or similar output, you get the [latest release](https://github.com/glitchedcoder/hangman/releases) by going to the assets and clicking the `Hanged Men.jar` file.
 After that, you can type in `java -jar ` and drag + drop the downloaded jar to your terminal.
 After that, all you need to do is press enter! The game will take care of the rest.
 
@@ -94,10 +98,10 @@ As of the writing of this, the following files are stored:
   - FadeOut (implement w/ Callback) ✔️
   - FixedTexture ✔️
   - TextInput ✔️
-  - TextBox
+  - TextBox ✔️
 - Assets for various scenes.
   - Maybe a GitHub logo?
-- Work on a script/gameplay for the story mode. 
+- Work on a script/gameplay for the story mode. ✔️
 - Documentation!
   - Make sure to get methods that use `Validator#...` and add `@throws IllegalArgumentException ...` to it.
 - Possibly make Scene serializable and store & load the previous scene from local data (i.e., a `CONTINUE` menu option)?

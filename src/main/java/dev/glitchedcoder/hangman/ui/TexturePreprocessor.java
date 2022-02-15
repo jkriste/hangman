@@ -117,17 +117,6 @@ public final class TexturePreprocessor {
         return this.image;
     }
 
-    private BufferedImage stitch(BufferedImage i1, BufferedImage i2) {
-        int newWidth = i1.getWidth() + i2.getWidth();
-        int newHeight = Math.max(i1.getHeight(), i2.getHeight());
-        BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = image.createGraphics();
-        graphics2D.drawImage(i1, 0, 0, null);
-        graphics2D.drawImage(i2, i1.getWidth(), 0, null);
-        graphics2D.dispose();
-        return image;
-    }
-
     private Color adjustColor(Color c1, Color c2) {
         double luminance = getRelativeLuminance(c1);
         return new Color(
@@ -141,5 +130,16 @@ public final class TexturePreprocessor {
         return (0.2126 * color.getRed())
                 + (0.7152 * color.getGreen())
                 + (0.0722 * color.getBlue());
+    }
+
+    public static BufferedImage stitch(BufferedImage i1, BufferedImage i2) {
+        int newWidth = i1.getWidth() + i2.getWidth();
+        int newHeight = Math.max(i1.getHeight(), i2.getHeight());
+        BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = image.createGraphics();
+        graphics2D.drawImage(i1, 0, 0, null);
+        graphics2D.drawImage(i2, i1.getWidth(), 0, null);
+        graphics2D.dispose();
+        return image;
     }
 }

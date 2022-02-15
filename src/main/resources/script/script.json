@@ -1,0 +1,46 @@
+{
+  "lines": {
+    "introduction_begin": [
+      "Hello, prisoner 46515874310.",
+      "Perhaps you have forgotten why you are here...",
+      "Allow me to remind you.",
+      "Let's see... Ah, prisoner 46515874310...",
+      "Accused of %crime%.",
+      "That jog your memory? No?",
+      "Well either way, you'll be free soon or...",
+      "Well, let's not get ahead of ourselves.",
+      "Allow me to introduce myself."
+    ],
+    "introduction_end": [
+      "They call me the Executioner.",
+      "The courts have given me jurisdiction to decide your fate.",
+      "So, let's play a game, shall we?",
+      "I don't know if you've heard of a game called hangman...",
+      "No? Alright, allow me to explain.",
+      "I'm going to pick a word of varying length.",
+      "Your goal is to guess what the word is.",
+      "Either by guessing the word or guessing letter by letter.",
+      "However, be warned... You have a limited amount of guesses.",
+      "Guessing an incorrect letter will take away 1 guess.",
+      "Guessing an incorrect word will take away 2 guesses.",
+      "So try to be strategic about it.",
+      "Let's begin, shall we?"
+    ],
+    "phase_one": [
+      ""
+    ]
+  },
+  "crimes": [
+    "Throwing an alligator through a drive thru window",
+    "Trying to stop a hurricane with bullets",
+    "Stealing all of the nuggets from McDonalds",
+    "Practicing karate on local wildlife",
+    "Impersonating a police officer and arresting the president",
+    "Bribing the police with coffee and donuts",
+    "Attempting to steal traffic lights",
+    "Trying to ride on a manatee",
+    "Calling 911 because you were lonely",
+    "Stealing pigeons from a local pet store",
+    "Smuggling a monkey through the border"
+  ]
+}

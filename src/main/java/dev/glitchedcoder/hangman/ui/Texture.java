@@ -47,12 +47,12 @@ public enum Texture {
     N7("7"),
     N8("8"),
     N9("9"),
-    ENTER_BUTTON("ent"),
-    ESCAPE_BUTTON("esc"),
-    LEFT_ARROW_BUTTON("left_arrow"),
-    RIGHT_ARROW_BUTTON("right_arrow"),
-    UP_ARROW_BUTTON("up_arrow"),
-    DOWN_ARROW_BUTTON("down_arrow"),
+    ENTER_ICON("ent"),
+    ESCAPE_ICON("esc"),
+    LEFT_ARROW_ICON("left_arrow"),
+    RIGHT_ARROW_ICON("right_arrow"),
+    UP_ARROW_ICON("up_arrow"),
+    DOWN_ARROW_ICON("down_arrow"),
     EXECUTIONER("Executioner"),
     TEXT_BOX("textbox"),
     SPACE("space"),
@@ -64,7 +64,13 @@ public enum Texture {
     SOLID_LEFT_ARROW("solid_left_arrow"),
     SOLID_RIGHT_ARROW("solid_right_arrow"),
     UNDERSCORE("underscore"),
-    SELF_PORTRAIT("self_portrait");
+    SELF_PORTRAIT("self_portrait"),
+    A_TO_Z_ICON("atoz"),
+    BACKSPACE_ICON("bck"),
+    ZERO_TO_NINE_ICON("0to9"),
+    BLANK_ICON("blank_icon"),
+    APOSTROPHE("apostrophe"),
+    QUESTIONMARK_PORTRAIT("questionmark");
 
     private final String loc;
 

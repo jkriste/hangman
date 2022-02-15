@@ -9,6 +9,7 @@ public enum EntityType {
     FADE_OUT,
     FIXED_TEXTURE,
     CHARACTER_INPUT,
-    TEXT_INPUT
+    TEXT_INPUT,
+    ICON_OVERLAY
 
 }

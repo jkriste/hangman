@@ -27,7 +27,7 @@ public class Splash extends Scene {
     private final FixedTexture text;
     private final FixedTexture portrait;
 
-    private static final byte SKIP = 12;
+    private static final byte SKIP = 11;
 
     public Splash() {
         this.fadeIn = new FadeIn(this, Color.WHITE, SKIP);
@@ -48,7 +48,6 @@ public class Splash extends Scene {
         setBackground(Color.WHITE);
         addRenderables(fadeIn, fadeOut, text, portrait);
         spawnAll(fadeIn, text, portrait);
-        executor.schedule(() -> playSound(Sound.SPLASH_SOUND), 2, TimeUnit.SECONDS);
         fadeIn.onFinish(() -> {
             fadeIn.dispose();
             executor.schedule(fadeOut::spawn, 1, TimeUnit.SECONDS);

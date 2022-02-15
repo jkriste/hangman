@@ -40,6 +40,8 @@ public class TextInput extends Entity {
 
     @Override
     protected void onUnload() {
+        for (CharacterInput input : list)
+            input.onUnload();
         list.clear();
     }
 
@@ -95,6 +97,19 @@ public class TextInput extends Entity {
     public void lockCharacter(int index) {
         index = Validator.constrain(index, 0, length - 1);
         this.list.get(index).setLocked(true);
+    }
+
+    public void lockAll(boolean locked) {
+        for (CharacterInput input : this.list)
+            input.setLocked(locked);
+    }
+
+    public boolean allLocked() {
+        for (CharacterInput input : this.list) {
+            if (input.isUnlocked())
+                return false;
+        }
+        return true;
     }
 
     @Nullable

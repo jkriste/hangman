@@ -164,6 +164,8 @@ public abstract class Scene implements KeyEventDispatcher {
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(volume.getGain());
             }
+            clip.drain();
+            clip.setFramePosition(0);
             clip.open(sound.asStream());
             clip.start();
             while(clip.getMicrosecondLength() != clip.getMicrosecondPosition())

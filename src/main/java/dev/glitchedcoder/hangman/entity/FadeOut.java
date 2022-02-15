@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Resolution;
 import dev.glitchedcoder.hangman.window.Scene;
@@ -33,7 +34,7 @@ public class FadeOut extends Entity {
 
     @Override
     protected void onLoad() {
-        Resolution resolution = CONFIG.getResolution();
+        Resolution resolution = Config.getConfig().getResolution();
         this.bounds = new Rectangle(resolution.getWidth(), resolution.getHeight());
     }
 
