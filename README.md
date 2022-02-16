@@ -82,7 +82,6 @@ As of the writing of this, the following files are stored:
 - `config.json` - This file stores the following preferences:
   - API Key
   - Resolution
-  - Volume
 
 ### TODO
 

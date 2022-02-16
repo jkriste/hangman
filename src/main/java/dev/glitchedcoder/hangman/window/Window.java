@@ -37,7 +37,7 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         add(view);
         adjustResolution(Config.getConfig().getResolution());
         setResizable(false);
-        setTitle(Constants.TITLE + " v" + Constants.VERSION);
+        setTitle(Constants.TITLE);
         setIconImage(Texture.EXECUTIONER.asImage());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addFocusListener(this);
@@ -129,7 +129,6 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         int newWidth = d.width - insets.left - insets.right;
         int newHeight = d.height - insets.top - insets.bottom;
         Dimension usable = new Dimension(newWidth, newHeight);
-        System.out.println("newHeight: " + newHeight + ", newWidth: " + newWidth);
         view.adjustDimensions(usable);
         Scene.adjustDimensions(usable);
         Location.adjustDimensions(usable);

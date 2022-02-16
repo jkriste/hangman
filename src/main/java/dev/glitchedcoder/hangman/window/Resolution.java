@@ -1,11 +1,11 @@
 package dev.glitchedcoder.hangman.window;
 
-import java.io.Serializable;
+import dev.glitchedcoder.hangman.scene.menu.ComponentOption;
 
 /**
  * Represents most, if not all, 16:9 aspect ratio resolutions.
  */
-public enum Resolution implements Serializable {
+public enum Resolution implements ComponentOption {
 
     P576("1024x576", 1024, 576, 1D),
     P648("1152x648", 1152, 648, 1.125),
@@ -29,6 +29,7 @@ public enum Resolution implements Serializable {
         this.scalar = scalar;
     }
 
+    @Override
     public String getName() {
         return name;
     }

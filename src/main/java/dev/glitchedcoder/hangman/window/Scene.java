@@ -4,24 +4,17 @@ import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.entity.RenderPriority;
 import dev.glitchedcoder.hangman.entity.Renderable;
 import dev.glitchedcoder.hangman.json.Config;
-import dev.glitchedcoder.hangman.sound.Sound;
-import dev.glitchedcoder.hangman.sound.Volume;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.key.Key;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nonnull;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -136,44 +129,6 @@ public abstract class Scene implements KeyEventDispatcher {
         for (Renderable r : this.renderables) {
             if (r.shouldDraw())
                 r.draw(graphics);
-        }
-    }
-
-    /**
-     * Plays the given {@link Sound}.
-     * <br />
-     * The sound's {@link FloatControl.Type#MASTER_GAIN} will be
-     * adjusted based on the {@link Volume} stored in the {@link Config}.
-     * <br />
-     * Depending on the OS and JRE, a {@link Sound} may not play
-     * at all or the {@link Volume} (even when adjusted in-game)
-     * will not be changed.
-     *
-     * @param sound The sound to play.
-     * @throws IllegalArgumentException Thrown if the given sound is null.
-     */
-    protected final void playSound(@Nonnull Sound sound) {
-        Volume volume = config.getVolume();
-        if (volume == Volume.MUTE)
-            return;
-        Validator.requireNotNull(sound, "Given sound is null!");
-        try (Clip clip = AudioSystem.getClip()) {
-            if (clip.isRunning())
-                clip.stop();
-            if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(volume.getGain());
-            }
-            clip.drain();
-            clip.setFramePosition(0);
-            clip.open(sound.asStream());
-            clip.start();
-            while(clip.getMicrosecondLength() != clip.getMicrosecondPosition())
-            {
-                // todo: LineListener
-            }
-        } catch (LineUnavailableException | IOException e) {
-            e.printStackTrace();
         }
     }
 

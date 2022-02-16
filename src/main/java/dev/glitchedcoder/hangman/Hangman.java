@@ -3,10 +3,14 @@ package dev.glitchedcoder.hangman;
 import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.json.Script;
 import dev.glitchedcoder.hangman.scene.Splash;
+import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.View;
 import dev.glitchedcoder.hangman.window.Window;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +50,25 @@ public final class Hangman {
             Thread.currentThread().interrupt();
         }
         System.exit(0);
+    }
+
+    public static synchronized void restart() {
+        File jarFile = Constants.JAR;
+        String[] args = {
+                "", "/c", "ping", "localhost", "-n", "2", ">",
+                "nul", "&&", "java", "-jar", jarFile.getAbsolutePath()
+        };
+        if (System.getProperty("os.name").toUpperCase(Locale.ROOT).contains("WIN"))
+            args[0] = "cmd";
+        else
+            args[0] = "bin/bash";
+        ProcessBuilder builder = new ProcessBuilder(args);
+        try {
+            builder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        exit();
     }
 
     public static Window getWindow() {

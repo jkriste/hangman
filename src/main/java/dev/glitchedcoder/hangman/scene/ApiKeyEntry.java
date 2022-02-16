@@ -3,13 +3,11 @@ package dev.glitchedcoder.hangman.scene;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.Location;
-import dev.glitchedcoder.hangman.entity.TextBox;
 import dev.glitchedcoder.hangman.entity.TextInput;
-import dev.glitchedcoder.hangman.json.Script;
-import dev.glitchedcoder.hangman.json.ScriptSection;
+import dev.glitchedcoder.hangman.scene.menu.MainMenu;
 import dev.glitchedcoder.hangman.ui.Icon;
-import dev.glitchedcoder.hangman.ui.Portrait;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
+import dev.glitchedcoder.hangman.util.ApiRequest;
 import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.key.Key;
 import dev.glitchedcoder.hangman.window.key.KeySelector;
@@ -17,15 +15,12 @@ import lombok.EqualsAndHashCode;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 public class ApiKeyEntry extends Scene {
 
     private final Set<Key> keys;
-    private final TextBox textBox;
     private final TextInput textInput;
     private final FixedTexture header;
     private final FixedTexture footer;
@@ -50,8 +45,7 @@ public class ApiKeyEntry extends Scene {
         this.header = new FixedTexture(this, headerText);
         this.footer = new FixedTexture(this, footerText);
         this.textInput = new TextInput(this, 5, 5, true);
-        this.iconOverlay = new IconOverlay(this, Color.WHITE, 3);
-        this.textBox = new TextBox(this, Portrait.UNKNOWN, Color.WHITE);
+        this.iconOverlay = new IconOverlay(this, Color.WHITE, 2.5);
     }
 
     @Override
@@ -60,27 +54,12 @@ public class ApiKeyEntry extends Scene {
         iconOverlay.setIcon(Icon.ZERO_TO_NINE, 2, 1);
         iconOverlay.setIcon(Icon.ENTER, 1, 0);
         iconOverlay.setIcon(Icon.BACKSPACE, 1, 1);
-        Script script = Script.getScript();
-        String crime = script.randomCrime();
-        List<String> introBegin = script.getSection(ScriptSection.INTRODUCTION_BEGIN);
-        byte index = 0;
-        for (byte b = 0; b < introBegin.size(); b++) {
-            if (introBegin.get(b).contains("%crime%"))
-                index = b;
-        }
-        introBegin.set(index, introBegin.get(index).replace("%crime%", crime));
-        textBox.addLines(introBegin);
-        textBox.onFinish(() -> {
-            textBox.setPortrait(Portrait.EXECUTIONER);
-            textBox.addLines(script.getSection(ScriptSection.INTRODUCTION_END));
-        });
         this.header.setLocation(Location.topCenter(header.getBounds()));
         this.textInput.setLocation(Location.center(textInput.getBounds()));
         this.footer.setLocation(Location.bottomCenter(footer.getBounds()));
         this.iconOverlay.setLocation(Location.bottomLeft(iconOverlay.getBounds()));
-        this.textBox.setLocation(Location.bottomCenter(textBox.getBounds()));
-        addRenderables(header, footer, textInput, iconOverlay, textBox);
-        spawnAll(header, footer, textInput, iconOverlay, textBox);
+        addRenderables(header, footer, textInput, iconOverlay);
+        spawnAll(header, footer, textInput, iconOverlay);
         footer.setVisible(false);
     }
 
@@ -91,21 +70,18 @@ public class ApiKeyEntry extends Scene {
 
     @Override
     protected void onKeyPress(Key key) {
-//        if (key == Key.ENTER) {
-//            footer.setVisible(false);
-//            if (!textInput.isValid()) {
-//                playSound(Sound.INVALID_SELECTION);
-//                return;
-//            }
-//            config.setApiKey(textInput.getInput());
-//            if (ApiRequest.checkApiKey())
-//                setScene(new MainMenu());
-//            else
-//                footer.setVisible(true);
-//        } else
-//            textInput.handleKeyInput(key);
-        if (key == Key.ENTER)
-            textBox.nextLine();
+        if (key == Key.ENTER) {
+            footer.setVisible(false);
+            if (!textInput.isValid()) {
+                return;
+            }
+            config.setApiKey(textInput.getInput());
+            if (ApiRequest.checkApiKey())
+                setScene(new MainMenu());
+            else
+                footer.setVisible(true);
+        } else
+            textInput.handleKeyInput(key);
     }
 
     @Override

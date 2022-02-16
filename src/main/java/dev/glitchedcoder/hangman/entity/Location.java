@@ -208,7 +208,6 @@ public final class Location {
     public static void adjustDimensions(@Nonnull Dimension d) {
         Validator.requireNotNull(d, "Given dimension is null!");
         dimension = d;
-        System.out.println("w: " + d.width + ", h: " + d.height);
     }
 
     /**

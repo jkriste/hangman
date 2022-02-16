@@ -2,7 +2,6 @@ package dev.glitchedcoder.hangman.json;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
-import dev.glitchedcoder.hangman.sound.Volume;
 import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Resolution;
@@ -23,7 +22,6 @@ import java.util.Locale;
 public final class Config {
 
     private String apiKey;
-    private Volume volume;
     private Resolution resolution;
 
     private static Config instance;
@@ -36,7 +34,6 @@ public final class Config {
         if (!defaults)
             return;
         this.apiKey = "";
-        this.volume = Volume.NORMAL;
         this.resolution = Resolution.P576;
     }
 
@@ -63,7 +60,7 @@ public final class Config {
      * new instance of Config with the default values:
      * <br />
      * {@code
-     *      { "apiKey": "", "resolution": "P576", "volume": "NORMAL" }
+     *      { "apiKey": "", "resolution": "P576" }
      * }
      * <br />
      * If the config file exists, it will be loaded as the class instance.
@@ -153,21 +150,6 @@ public final class Config {
     }
 
     /**
-     * Gets the stored {@link Volume}.
-     * <br />
-     * The {@link Volume} returned may not
-     * be the same as the {@link Volume}
-     * that exists in the config file due to
-     * {@link #getConfig() the class instance}
-     * not being saved until exit.
-     *
-     * @return The stored {@link Volume}.
-     */
-    public Volume getVolume() {
-        return volume;
-    }
-
-    /**
      * Sets the API key.
      * <br />
      * This is used to communicate with the API
@@ -198,17 +180,5 @@ public final class Config {
     public void setResolution(@Nonnull Resolution resolution) {
         Validator.requireNotNull(resolution, "Given resolution is null!");
         this.resolution = resolution;
-    }
-
-    /**
-     * Sets the {@link Volume}.
-     * <br />
-     * This method updates the volume that
-     * the next sound will use.
-     *
-     * @param volume The volume to set.
-     */
-    public void setVolume(Volume volume) {
-        this.volume = volume;
     }
 }

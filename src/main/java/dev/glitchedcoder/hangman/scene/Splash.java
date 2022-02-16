@@ -5,7 +5,6 @@ import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.scene.menu.MainMenu;
-import dev.glitchedcoder.hangman.sound.Sound;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.util.ApiRequest;

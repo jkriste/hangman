@@ -1,14 +1,14 @@
 package dev.glitchedcoder.hangman.json;
 
 import com.google.gson.Gson;
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.util.Validator;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -28,13 +28,10 @@ public final class Script {
 
     public static void loadScript() {
         Gson gson = Constants.GSON;
-        File script = Constants.SCRIPT_FILE;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(script));
-            instance = gson.fromJson(reader, Script.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream in = Hangman.class.getResourceAsStream("/script/script.json");
+        Validator.requireNotNull(in, "Could not load script!");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        instance = gson.fromJson(reader, Script.class);
     }
 
     public String randomCrime() {
