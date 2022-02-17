@@ -72,6 +72,10 @@ public abstract class Menu extends Scene {
         return 0;
     }
 
+    protected int getComponentOffset() {
+        return 0;
+    }
+
     @Override
     protected Set<Key> getKeyListeners() {
         return this.keys;
@@ -144,7 +148,7 @@ public abstract class Menu extends Scene {
             case ARROW_LEFT: {
                 MenuComponent focused = currentlyFocused();
                 if (focused instanceof ScrollableMenuComponent) {
-                    ScrollableMenuComponent component = (ScrollableMenuComponent) focused;
+                    ScrollableMenuComponent<?> component = (ScrollableMenuComponent<?>) focused;
                     component.scrollLeft();
                 }
                 break;
@@ -152,7 +156,7 @@ public abstract class Menu extends Scene {
             case ARROW_RIGHT: {
                 MenuComponent focused = currentlyFocused();
                 if (focused instanceof ScrollableMenuComponent) {
-                    ScrollableMenuComponent component = (ScrollableMenuComponent) focused;
+                    ScrollableMenuComponent<?> component = (ScrollableMenuComponent<?>) focused;
                     component.scrollRight();
                 }
                 break;
@@ -181,7 +185,7 @@ public abstract class Menu extends Scene {
         for (byte b = 0; b < components.length; b++) {
             Rectangle bounds = components[b].getBounds();
             Location loc = Location.center(bounds);
-            loc.setY(centered.getY() + (b * (bounds.height + yOffset)));
+            loc.setY(centered.getY() + (b * (bounds.height + yOffset)) + getComponentOffset());
             components[b].setLocation(loc);
         }
     }

@@ -8,7 +8,6 @@ import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.View;
 import dev.glitchedcoder.hangman.window.Window;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -53,16 +52,13 @@ public final class Hangman {
     }
 
     public static synchronized void restart() {
-        File jarFile = Constants.JAR;
-        String[] args = {
-                "", "/c", "ping", "localhost", "-n", "2", ">",
-                "nul", "&&", "java", "-jar", jarFile.getAbsolutePath()
-        };
+        ProcessBuilder builder;
         if (System.getProperty("os.name").toUpperCase(Locale.ROOT).contains("WIN"))
-            args[0] = "cmd";
+            builder = new ProcessBuilder(Constants.WINDOWS_ARGS);
         else
-            args[0] = "bin/bash";
-        ProcessBuilder builder = new ProcessBuilder(args);
+            builder = new ProcessBuilder(Constants.UNIX_ARGS);
+        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         try {
             builder.start();
         } catch (IOException e) {

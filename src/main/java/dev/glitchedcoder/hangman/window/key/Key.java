@@ -75,12 +75,11 @@ public enum Key {
     public static final Set<Key> ARROW_KEYS;
     public static final Set<Key> ACTION_KEYS;
     public static final Set<Key> WRITABLE_KEYS;
+    public static final Set<Key> ALPHABETICAL_KEYS;
 
     static {
+        ARROW_KEYS = Set.of(ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT);
         Set<Key> keys = new HashSet<>();
-        Collections.addAll(keys, ARROW_UP, ARROW_LEFT, ARROW_RIGHT, ARROW_DOWN);
-        ARROW_KEYS = Collections.unmodifiableSet(keys);
-        keys.clear();
         for (Key k : values) {
             if (k.isActionKey())
                 keys.add(k);
@@ -92,6 +91,10 @@ public enum Key {
                 keys.add(k);
         }
         WRITABLE_KEYS = Collections.unmodifiableSet(keys);
+        ALPHABETICAL_KEYS = Set.of(
+                A, B, C, D, E, F, G, H, I, J, K, L, M,
+                N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+        );
     }
 
     private final int id;

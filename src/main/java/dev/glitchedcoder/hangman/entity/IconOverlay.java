@@ -102,6 +102,15 @@ public class IconOverlay extends Entity {
         update();
     }
 
+    public void setIcons(@Nonnull Icon[][] iconMatrix) {
+        for (byte i = 0; i < MATRIX_SIZE; i++) {
+            for (byte j = 0; j < MATRIX_SIZE; j++) {
+                this.iconMatrix[i][j] = iconMatrix[i][j];
+            }
+        }
+        update();
+    }
+
     public void removeIcon(@Nonnull Icon icon) {
         for (byte i = 0; i < MATRIX_SIZE; i++) {
             for (byte j = 0; j < MATRIX_SIZE; j++) {

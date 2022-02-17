@@ -1,6 +1,5 @@
 package dev.glitchedcoder.hangman.entity;
 
-import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Scene;
 
@@ -17,6 +16,7 @@ public abstract class Entity implements Renderable {
     private final Scene scene;
     private final EntityType type;
     private final AtomicReference<Location> loc;
+    private final AtomicReference<RenderPriority> priority;
 
     private volatile boolean dead;
     private volatile boolean loaded;
@@ -34,6 +34,7 @@ public abstract class Entity implements Renderable {
         this.id = UUID.randomUUID();
         this.type = type;
         this.loc = new AtomicReference<>(loc);
+        this.priority = new AtomicReference<>(RenderPriority.NORMAL);
     }
 
     /**
@@ -92,6 +93,12 @@ public abstract class Entity implements Renderable {
         onLoad();
         this.loaded = true;
         this.visible = true;
+    }
+
+    @Nonnull
+    @Override
+    public RenderPriority getRenderPriority() {
+        return priority.get();
     }
 
     /**
@@ -193,5 +200,10 @@ public abstract class Entity implements Renderable {
      */
     public final void setLocation(@Nonnull Location location) {
         this.loc.set(location);
+    }
+
+    public void setRenderPriority(@Nonnull RenderPriority priority) {
+        Validator.requireNotNull(priority, "Given priority is null!");
+        this.priority.set(priority);
     }
 }

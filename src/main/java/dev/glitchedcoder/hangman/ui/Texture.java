@@ -70,7 +70,11 @@ public enum Texture {
     ZERO_TO_NINE_ICON("0to9"),
     BLANK_ICON("blank_icon"),
     APOSTROPHE("apostrophe"),
-    QUESTIONMARK_PORTRAIT("questionmark");
+    QUESTIONMARK_PORTRAIT("questionmark"),
+    LIGHT_FIXTURE_ON("light_fixture_on"),
+    LIGHT_FIXTURE_OFF("light_fixture_off"),
+    HAND_TEXTURE("hands"),
+    TABLE_TEXTURE("table");
 
     private final String loc;
 

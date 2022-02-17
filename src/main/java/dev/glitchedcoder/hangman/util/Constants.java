@@ -6,6 +6,7 @@ import dev.glitchedcoder.hangman.Hangman;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Locale;
 
 public final class Constants {
@@ -17,7 +18,9 @@ public final class Constants {
     public static final File APPDATA_DIR;
     public static final byte MIN_WORD_LENGTH;
     public static final byte MAX_WORD_LENGTH;
+    public static final List<String> UNIX_ARGS;
     public static final String VERSION = "1.0.0";
+    public static final List<String> WINDOWS_ARGS;
     public static final String TITLE = "Hanged Men";
 
     static {
@@ -52,6 +55,14 @@ public final class Constants {
         JAR = Validator.requireNotNull(jar);
         MIN_WORD_LENGTH = 4;
         MAX_WORD_LENGTH = 14;
+        UNIX_ARGS = List.of(
+                "/bin/bash", "-c", "\"ping", "-c", "2", "localhost", ">", "nul",
+                "&&", "java", "-jar", JAR.getAbsolutePath() + "\""
+        );
+        WINDOWS_ARGS = List.of(
+                "cmd", "/c", "ping", "localhost", "-n", "2", ">", "nul",
+                "&&", "java", "-jar", JAR.getAbsolutePath()
+        );
     }
 
     private Constants() {

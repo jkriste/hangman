@@ -20,13 +20,13 @@ public class PreferencesMenu extends Menu {
     public PreferencesMenu(@Nonnull MainMenu parent) {
         this.parent = parent;
         this.components = new MenuComponent[COMPONENT_SIZE];
-        ScrollableMenuComponent resolutions = new ScrollableMenuComponent(this, Resolution.values, SCALAR);
+        ScrollableMenuComponent<Resolution> resolutions = new ScrollableMenuComponent<>(this, Resolution.values, SCALAR);
         MenuComponent changeKey = new MenuComponent(this, "Change API Key", SCALAR);
         MenuComponent applyComponent = new MenuComponent(this, "APPLY & RESTART", SCALAR);
         MenuComponent backComponent = new MenuComponent(this, "BACK", SCALAR);
         changeKey.onSelect(() -> setScene(new ApiKeyEntry()));
         applyComponent.onSelect(() -> {
-            Resolution resolution = (Resolution) resolutions.getSelected();
+            Resolution resolution = resolutions.getSelected();
             config.setResolution(resolution);
             Hangman.restart();
         });

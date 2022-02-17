@@ -1,11 +1,9 @@
 package dev.glitchedcoder.hangman.window;
 
-import dev.glitchedcoder.hangman.scene.menu.ComponentOption;
-
 /**
  * Represents most, if not all, 16:9 aspect ratio resolutions.
  */
-public enum Resolution implements ComponentOption {
+public enum Resolution {
 
     P576("1024x576", 1024, 576, 1D),
     P648("1152x648", 1152, 648, 1.125),
@@ -29,11 +27,6 @@ public enum Resolution implements ComponentOption {
         this.scalar = scalar;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
     public short getWidth() {
         return width;
     }
@@ -44,5 +37,10 @@ public enum Resolution implements ComponentOption {
 
     public double getScalar() {
         return scalar;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

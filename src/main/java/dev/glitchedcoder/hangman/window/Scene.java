@@ -144,6 +144,7 @@ public abstract class Scene implements KeyEventDispatcher {
         Validator.requireNotNull(scene, "Given scene is null!");
         View view = Hangman.getWindow().getView();
         view.setScene(scene);
+        this.renderables.clear();
     }
 
     /**

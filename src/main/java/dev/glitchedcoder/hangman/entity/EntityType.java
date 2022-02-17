@@ -10,6 +10,7 @@ public enum EntityType {
     FIXED_TEXTURE,
     CHARACTER_INPUT,
     TEXT_INPUT,
-    ICON_OVERLAY
+    ICON_OVERLAY,
+    LIGHT_FIXTURE
 
 }

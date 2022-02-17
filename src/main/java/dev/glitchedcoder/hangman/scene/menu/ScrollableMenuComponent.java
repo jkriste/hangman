@@ -2,14 +2,14 @@ package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.window.Scene;
 
-public class ScrollableMenuComponent extends MenuComponent {
+public class ScrollableMenuComponent<T> extends MenuComponent {
 
     private byte index;
 
-    private final ComponentOption[] options;
+    private final T[] options;
 
-    public ScrollableMenuComponent(Scene view, ComponentOption[] options, double scale) {
-        super(view, "<" + options[0].getName() + ">", scale);
+    public ScrollableMenuComponent(Scene view, T[] options, double scale) {
+        super(view, "<" + options[0].toString() + ">", scale);
         this.index = 0;
         this.options = options;
     }
@@ -19,7 +19,7 @@ public class ScrollableMenuComponent extends MenuComponent {
             --index;
         else
             index = (byte) (options.length - 1);
-        setText("<" + options[index].getName() + ">");
+        setText("<" + options[index].toString() + ">");
     }
 
     public void scrollRight() {
@@ -27,10 +27,10 @@ public class ScrollableMenuComponent extends MenuComponent {
             ++index;
         else
             index = 0;
-        setText("<" + options[index].getName() + ">");
+        setText("<" + options[index].toString() + ">");
     }
 
-    public ComponentOption getSelected() {
+    public T getSelected() {
         return this.options[index];
     }
 }

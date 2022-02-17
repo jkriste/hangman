@@ -16,10 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.Random;
 
 public final class ApiRequest {
 
     private static final int OK_STATUS = 200;
+    private static final Random RANDOM = new Random();
     private static final Config CONFIG = Config.getConfig();
 
     private ApiRequest() {
@@ -62,6 +64,22 @@ public final class ApiRequest {
         }
     }
 
+    /**
+     * Requests a {@link Word} from the API.
+     * <br />
+     * This method communicates with the {@link Constants#API_URL API}
+     * over the web, so an internet connection is required in order
+     * for this method to successfully execute/return a valid {@link Word}.
+     * <br />
+     * In very rare circumstances, it may be possible for this
+     * method to return {@code null} even when the stored
+     * {@link Config#getApiKey() API key} is valid. This is due to
+     * a 1-second ratelimit by the API. This is also why it is best
+     * to use your own API key, as to not ratelimit others.
+     *
+     * @param length The length of the word to request.
+     * @return A {@link Word} from the API, or rarely {@code null}.
+     */
     public static Word requestWord(int length) {
         Gson gson = Constants.GSON;
         length = Validator.constrain(length, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH);
@@ -85,5 +103,16 @@ public final class ApiRequest {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Gets a random word length between
+     * {@link Constants#MIN_WORD_LENGTH} and
+     * {@link Constants#MAX_WORD_LENGTH}.
+     *
+     * @return A random word length.
+     */
+    public static int randomWordLength() {
+        return RANDOM.nextInt(Constants.MAX_WORD_LENGTH - Constants.MIN_WORD_LENGTH) + Constants.MIN_WORD_LENGTH;
     }
 }
