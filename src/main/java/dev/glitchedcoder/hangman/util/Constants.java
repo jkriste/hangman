@@ -56,8 +56,7 @@ public final class Constants {
         MIN_WORD_LENGTH = 4;
         MAX_WORD_LENGTH = 14;
         UNIX_ARGS = List.of(
-                "/bin/bash", "-c", "\"ping", "-c", "2", "localhost", ">", "nul",
-                "&&", "java", "-jar", JAR.getAbsolutePath() + "\""
+                "/bin/bash", "-c", "/bin/bash -c \"sleep 2 > /dev/null && java -jar " + JAR.getAbsolutePath() + "\""
         );
         WINDOWS_ARGS = List.of(
                 "cmd", "/c", "ping", "localhost", "-n", "2", ">", "nul",

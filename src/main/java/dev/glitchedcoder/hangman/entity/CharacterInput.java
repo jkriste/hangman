@@ -21,11 +21,13 @@ public class CharacterInput extends Entity {
     private final boolean space;
     private final Rectangle bounds;
 
+    private static final char EMPTY_CHAR;
     private static final byte SPACE_BETWEEN;
     private static final Color LOCKED_COLOR;
     private static final Color UNLOCKED_COLOR;
 
     static {
+        EMPTY_CHAR = ' ';
         LOCKED_COLOR = Color.GREEN;
         UNLOCKED_COLOR = Color.WHITE;
         Config config = Config.getConfig();
@@ -36,7 +38,7 @@ public class CharacterInput extends Entity {
         super(scene, EntityType.CHARACTER_INPUT);
         this.scale = scalar;
         this.space = space;
-        this.character = ' ';
+        this.character = EMPTY_CHAR;
         this.underscore = new TexturePreprocessor(space ? "_ " : "_")
                 .color(UNLOCKED_COLOR)
                 .scale(scalar)
@@ -73,26 +75,57 @@ public class CharacterInput extends Entity {
             graphics.drawImage(texture, getLocation().getX(), getLocation().getY() - SPACE_BETWEEN, null);
     }
 
+    /**
+     * Locks this {@link CharacterInput}.
+     * <br />
+     * When locked, the character stored in
+     * this instance cannot be changed until
+     * unlocked.
+     *
+     * @param locked True to lock, false otherwise.
+     */
     public void setLocked(boolean locked) {
         this.locked = locked;
         update();
     }
 
+    /**
+     * Sets the character of the {@link CharacterInput}.
+     *
+     * @param c The char to set.
+     */
     public void setCharacter(char c) {
         this.character = c;
         update();
     }
 
+    /**
+     * Checks if the {@link CharacterInput} is unlocked.
+     * <br />
+     * When unlocked, the {@link CharacterInput}'s
+     * character can be set by the {@link TextInput}.
+     *
+     * @return True if unlocked, false otherwise.
+     */
     public boolean isUnlocked() {
         return !locked;
     }
 
+    /**
+     * Gets the character stored in this
+     * instance of {@link CharacterInput}.
+     * <br />
+     * If {@link #isEmpty() empty}, it will
+     * return a {@code ' '} (space) character.
+     *
+     * @return
+     */
     public char getCharacter() {
         return character;
     }
 
     public boolean isEmpty() {
-        return this.character == ' ';
+        return this.character == EMPTY_CHAR;
     }
 
     private void update() {
