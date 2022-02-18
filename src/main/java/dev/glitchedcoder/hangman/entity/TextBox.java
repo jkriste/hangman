@@ -73,7 +73,8 @@ public class TextBox extends Entity {
         int portY = (loc.getY() + (getBounds().height / 2) - (portraitImage.getHeight() / 2));
         int portX = (loc.getX() + SPACE_BETWEEN_BOX);
         this.portraitLoc = new Location(portX, portY);
-        update();
+        if (!lines.isEmpty())
+            update();
     }
 
     @Override
