@@ -45,6 +45,11 @@ public final class TexturePreprocessor {
         this.scalar = 1D;
     }
 
+    public TexturePreprocessor(@Nonnull BufferedImage image) {
+        this.scalar = 1D;
+        this.image = image;
+    }
+
     public TexturePreprocessor setText(@Nonnull String text) {
         Validator.requireNotNull(text, "Given text is null!");
         this.text = text;

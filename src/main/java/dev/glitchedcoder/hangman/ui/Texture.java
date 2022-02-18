@@ -73,8 +73,17 @@ public enum Texture {
     QUESTIONMARK_PORTRAIT("questionmark"),
     LIGHT_FIXTURE_ON("light_fixture_on"),
     LIGHT_FIXTURE_OFF("light_fixture_off"),
-    HAND_TEXTURE("hands"),
-    TABLE_TEXTURE("table");
+    HANDS_BOUND("hands_bound"),
+    HANDS_UNBOUND("hands_unbound"),
+    TABLE_TEXTURE("table"),
+    HANGING_MAN_1("hanging_man_1"),
+    HANGING_MAN_2("hanging_man_2"),
+    HANGING_MAN_3("hanging_man_3"),
+    HANGING_MAN_4("hanging_man_4"),
+    HANGING_MAN_5("hanging_man_5"),
+    HANGING_MAN_6("hanging_man_6"),
+    HANGING_MAN_7("hanging_man_7"),
+    HANGING_MAN_8("hanging_man_8");
 
     private final String loc;
 

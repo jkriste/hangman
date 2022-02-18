@@ -1,6 +1,8 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.scene.ApiKeyEntry;
+import dev.glitchedcoder.hangman.scene.mode.FreeMode;
+import dev.glitchedcoder.hangman.scene.mode.StoryIntro;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
@@ -20,8 +22,8 @@ public class SingleplayerMenu extends Menu {
         MenuComponent storyMode = new MenuComponent(this, "Story Mode", SCALAR);
         MenuComponent freeMode = new MenuComponent(this, "Free Mode", SCALAR);
         MenuComponent back = new MenuComponent(this, "Back", SCALAR);
-        storyMode.onSelect(() -> setScene(new ApiKeyEntry()));
-        freeMode.onSelect(() -> setScene(new ApiKeyEntry()));
+        storyMode.onSelect(() -> setScene(new StoryIntro()));
+        freeMode.onSelect(() -> setScene(new FreeMode(null)));
         back.onSelect(() -> setScene(parent));
         components[0] = storyMode;
         components[1] = freeMode;

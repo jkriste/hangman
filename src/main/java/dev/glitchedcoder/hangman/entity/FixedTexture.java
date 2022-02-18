@@ -68,6 +68,7 @@ public class FixedTexture extends Entity {
 
     public void setImage(@Nonnull BufferedImage image) {
         Validator.requireNotNull(image, "Given image is null!");
-
+        this.image = image;
+        this.bounds = new Rectangle(image.getWidth(), image.getHeight());
     }
 }

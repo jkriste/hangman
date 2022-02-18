@@ -37,6 +37,9 @@ After you get the above or similar output, you get the [latest release](https://
 After that, you can type in `java -jar ` and drag + drop the downloaded jar to your terminal.
 After that, all you need to do is press enter! The game will take care of the rest.
 
+Lucky  for you, if this is a nuisance to you and you don't like terminals, you can simply double-left-click the `Hangman.jar` file and it will open.
+Best of luck!
+
 ## Planned Features
 
 - Single-player:
@@ -86,19 +89,18 @@ As of the writing of this, the following files are stored:
 ### TODO
 
 - Change game loop to correctly count ticks. ✔️
-- Start on API requests using some kind of library?
-- Either use a `LineListener` or multithreading to play sounds.
+- Start on API requests using some kind of library? ✔️
 - Work on texture pre-processing (most likely limited to buffered images). ✔️
 - Start on menus and menu components. ✔️
-  - Main menu.
-  - Preferences menu.
+  - Main menu. ✔️
+  - Preferences menu. ✔️
 - Entity types:
   - FadeIn (implement w/ Callback) ✔️
   - FadeOut (implement w/ Callback) ✔️
   - FixedTexture ✔️
   - TextInput ✔️
   - TextBox ✔️
-- Assets for various scenes.
+- Assets for various scenes. ✔️
   - Maybe a GitHub logo?
 - Work on a script/gameplay for the story mode. ✔️
 - Documentation!

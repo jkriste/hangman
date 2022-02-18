@@ -25,7 +25,6 @@ import dev.glitchedcoder.hangman.window.key.KeySelector;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -35,13 +34,14 @@ import java.util.Map;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-public class FreeMode extends Scene {
+public class PhaseMode extends Scene {
 
     private byte guesses;
     private GameState state;
     private FixedTexture letters;
     private FixedTexture guessText;
 
+    private final Phase phase;
     private final String word;
     private final Set<Key> keys;
     private final TextBox textBox;
@@ -53,7 +53,8 @@ public class FreeMode extends Scene {
     private final Map<Character, Boolean> guessed;
     private final ScrollableMenuComponent<Action> action;
 
-    public FreeMode(@Nullable String word) {
+    public PhaseMode(@Nonnull Phase phase) {
+        this.phase = phase;
         this.keys = KeySelector.create()
                 .group(Key.ALPHABETICAL_KEYS)
                 .group(Key.ARROW_KEYS)
@@ -61,11 +62,7 @@ public class FreeMode extends Scene {
                 .with(Key.ESCAPE)
                 .with(Key.BACKSPACE)
                 .build();
-        if (word == null) {
-            int length = ApiRequest.randomWordLength();
-            this.word = Validator.requireNotNull(ApiRequest.requestWord(length)).getWord();
-        } else
-            this.word = word;
+        this.word = Validator.requireNotNull(ApiRequest.requestWord(phase.getWordLength())).getWord();
         this.textInput = new TextInput(this, this.word.length(), 5, this.word.length() < 10);
         this.light = new LightFixture(this, (byte) 10, 4.1);
         BufferedImage table = new TexturePreprocessor(Texture.TABLE_TEXTURE)
@@ -83,7 +80,9 @@ public class FreeMode extends Scene {
         this.guesses = (byte) ((26 - this.word.length()) * (2D / 3D));
         this.guessed = new HashMap<>();
         updateGuesses();
-        setState(GameState.PICKING_OPTION);
+        setState(GameState.READING_TEXT);
+        this.textBox.addLines(phase.getScript());
+        this.textBox.onFinish(() -> setState(GameState.PICKING_OPTION));
     }
 
     @Override
@@ -100,8 +99,8 @@ public class FreeMode extends Scene {
         this.light.setRenderPriority(new RenderPriority(124));
         this.hands.setRenderPriority(new RenderPriority(125));
         this.textBox.setRenderPriority(RenderPriority.MAX);
-        addRenderables(textInput, overlay, table, hands, light, guessText, action);
-        spawnAll(textInput, overlay, table, hands, light, guessText, action);
+        addRenderables(textInput, overlay, table, hands, light, guessText, action, textBox);
+        spawnAll(textInput, overlay, table, hands, light, guessText, action, textBox);
         this.action.onSelect(() -> setState(
                 action.getSelected() == Action.GUESS_WORD ? GameState.GUESSING_WORD : GameState.GUESSING_LETTER
         ));
@@ -185,6 +184,7 @@ public class FreeMode extends Scene {
                     setState(GameState.GAME_WON);
                     return;
                 }
+                textBox.setVisible(false);
                 action.setVisible(true);
                 action.setFocused(true);
                 updateGuessedLetters();
@@ -202,8 +202,6 @@ public class FreeMode extends Scene {
                 script.set(index, script.get(index).replace("%word%", word));
                 textBox.addLines(script);
                 textBox.onFinish(() -> setScene(new EndScreen(false)));
-                addRenderable(textBox);
-                textBox.spawn();
                 break;
             }
             case GUESSING_LETTER:
@@ -211,13 +209,16 @@ public class FreeMode extends Scene {
                 action.setVisible(false);
                 break;
             case GAME_WON: {
+                if (phase.hasNext()) {
+                    Phase next = Validator.requireNotNull(phase.next());
+                    setScene(new PhaseMode(next));
+                    return;
+                }
                 action.setVisible(false);
                 textBox.setVisible(true);
                 List<String> script = Script.getScript().getSection(ScriptSection.GAME_WON);
                 textBox.addLines(script);
                 textBox.onFinish(() -> setScene(new EndScreen(true)));
-                addRenderable(textBox);
-                textBox.spawn();
                 break;
             }
             default:

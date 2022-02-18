@@ -5,6 +5,7 @@ import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.LightFixture;
 import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.entity.RenderPriority;
+import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import lombok.EqualsAndHashCode;
@@ -38,13 +39,14 @@ public class MainMenu extends Menu {
         this.components[2] = preferences;
         this.components[3] = exit;
         this.light = new LightFixture(this, (byte) 10, 4.1);
-        BufferedImage handsss = new TexturePreprocessor(Texture.HAND_TEXTURE)
+        boolean nsfl = config.getNSFL() == NSFL.ON;
+        BufferedImage hands = new TexturePreprocessor(nsfl ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
                 .scale(4)
                 .build();
         BufferedImage table = new TexturePreprocessor(Texture.TABLE_TEXTURE)
                 .scale(4)
                 .build();
-        this.hands = new FixedTexture(this, handsss);
+        this.hands = new FixedTexture(this, hands);
         this.table = new FixedTexture(this, table);
         this.table.setRenderPriority(new RenderPriority(125));
         this.light.setRenderPriority(new RenderPriority(126));

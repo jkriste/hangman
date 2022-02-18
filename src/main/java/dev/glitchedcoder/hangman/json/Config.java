@@ -2,6 +2,7 @@ package dev.glitchedcoder.hangman.json;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Resolution;
@@ -21,6 +22,7 @@ import java.util.Locale;
  */
 public final class Config {
 
+    private NSFL nsfl;
     private String apiKey;
     private Resolution resolution;
 
@@ -34,6 +36,7 @@ public final class Config {
         if (!defaults)
             return;
         this.apiKey = "";
+        this.nsfl = NSFL.OFF;
         this.resolution = Resolution.P576;
     }
 
@@ -60,7 +63,7 @@ public final class Config {
      * new instance of Config with the default values:
      * <br />
      * {@code
-     *      { "apiKey": "", "resolution": "P576" }
+     *      { "nsfl": "OFF", "apiKey": "", "resolution": "P576" }
      * }
      * <br />
      * If the config file exists, it will be loaded as the class instance.
@@ -118,6 +121,18 @@ public final class Config {
     }
 
     /**
+     * Gets whether more graphic scenes should be enabled.
+     * <br />
+     * If {@link NSFL#OFF}, NSFL-like scenes, entities, etc.,
+     * will be disabled and will not show until turned {@link NSFL#ON}.
+     *
+     * @return ON to show more graphic scenes, OFF otherwise.
+     */
+    public NSFL getNSFL() {
+        return nsfl;
+    }
+
+    /**
      * Gets the stored API key.
      * <br />
      * The API key returned may not
@@ -147,6 +162,18 @@ public final class Config {
     @Nonnull
     public Resolution getResolution() {
         return resolution;
+    }
+
+    /**
+     * Sets whether more graphic scenes should be enabled.
+     * <br />
+     * If {@link NSFL#OFF}, NSFL-like scenes, entities, etc.,
+     * will be disabled and will not show until turned {@link NSFL#ON}.
+     *
+     * @param nsfl Whether more graphic scenes should be enabled.
+     */
+    public void setNsfl(NSFL nsfl) {
+        this.nsfl = nsfl;
     }
 
     /**

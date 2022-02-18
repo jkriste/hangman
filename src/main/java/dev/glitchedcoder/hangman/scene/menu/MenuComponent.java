@@ -40,6 +40,15 @@ public class MenuComponent extends Entity {
         this.scalar = scale;
         this.text = text;
         this.focusable = true;
+        this.image = new TexturePreprocessor(this.text)
+                .color(focusable ? (focused ? FOCUSED : UNFOCUSED) : UNFOCUSABLE)
+                .scale(scalar)
+                .removeBackground()
+                .build();
+        this.bounds = new Rectangle(image.getWidth(), image.getHeight());
+        // account for any changes in text
+        int newX = Location.center(this.bounds).getX();
+        getLocation().setX(newX);
     }
 
     @Override

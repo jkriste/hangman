@@ -1,10 +1,10 @@
 {
   "lines": {
     "introduction_begin": [
-      "Hello, prisoner 46515874310.",
+      "Hello, prisoner 8662161075.",
       "Perhaps you have forgotten why you are here...",
       "Allow me to remind you.",
-      "Let's see... Ah, prisoner 46515874310...",
+      "Let's see... Ah, prisoner 8662161075...",
       "Accused of %crime%.",
       "That jog your memory? No?",
       "Well either way, you'll be free soon or...",
@@ -27,7 +27,49 @@
       "Let's begin, shall we?"
     ],
     "phase_one": [
-      ""
+      "Let's start with an introduction to the layout.",
+      "In the very center is the text input.",
+      "Just below that is the action selector.",
+      "Scrolling through the options and pressing enter will perform that action.",
+      "To your bottom right is the number of guesses you have left.",
+      "To your bottom left is an icon overlay.",
+      "If you're not sure what to do, use it as your guide.",
+      "At the very top, although invisible, is your used letters.",
+      "Letters that are no longer possible to play are put there.",
+      "Oh and just an FYI...",
+      "When guessing a word, only correct characters in the correct spot will count.",
+      "The word may contain a guessed character, but if it's not",
+      "in the right spot, it doesn't count.",
+      "This isn't Wordle...",
+      "I believe that's everything. Any questions?",
+      "Haha just kidding, this game isn't that advanced.",
+      "You have the floor."
+    ],
+    "phase_two": [
+      "Well done, I didn't think you had it in you.",
+      "I don't think you've earned your freedom just yet...",
+      "Let's keep going, yeah?",
+      "Haha just kidding it's not like you had a choice."
+    ],
+    "phase_three": [
+      "Okay, now you're starting to become a nuisance...",
+      "You know what? Surely you cannot do another...",
+      "If you win this one, I'll let you go, deal?",
+      "Alright, let's play."
+    ],
+    "game_lost": [
+      "The word was %word%.",
+      "You've lost...",
+      "Did I go too hard on you?",
+      "Well, either way...",
+      "You know the rules, and so do I.",
+      "I think you know what comes next..."
+    ],
+    "game_won": [
+      "Impressive... I didn't think it was possible.",
+      "I'm a man of my word. You are now free to go.",
+      "Although, I don't think it'll be long before I see you again.",
+      "Farewell..."
     ]
   },
   "crimes": [

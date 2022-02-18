@@ -68,6 +68,11 @@ public class TextInput extends Entity {
         return builder.toString();
     }
 
+    public void setCharacter(int index, char c) {
+        Validator.checkArgument(index >= 0 && index < list.size(), "Invalid index {}", index);
+        this.list.get(index).setCharacter(c);
+    }
+
     public void handleKeyInput(@Nonnull Key key) {
         Validator.requireNotNull(key, "Given key is null!");
         // check if writable key OR backspace
