@@ -170,7 +170,7 @@ public final class TexturePreprocessor {
      * It should be noted that {@code c1} is being adjusted
      * to look more like {@code c2}.
      * <br />
-     * Uses <a href="https://en.wikipedia.org/wiki/Relative_luminance>Relative Luminance</a>
+     * Uses <a href="https://en.wikipedia.org/wiki/Relative_luminance>Relative Luminance"</a>
      * to adjust the {@link Color}.
      *
      * @param c1 The color to be adjusted.
