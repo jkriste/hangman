@@ -4,6 +4,7 @@ public enum Action {
 
     GUESS_LETTER("Guess Letter"),
     GUESS_WORD("Guess Word"),
+    @Deprecated(since = "1.0.1")
     PICK_FROM_INVENTORY("Use Item");
 
     public static final Action[] values = values();

@@ -118,16 +118,26 @@ public class CharacterInput extends Entity {
      * If {@link #isEmpty() empty}, it will
      * return a {@code ' '} (space) character.
      *
-     * @return
+     * @return The character stored in the {@link CharacterInput}.
      */
     public char getCharacter() {
         return character;
     }
 
+    /**
+     * Checks if the {@link CharacterInput} is empty.
+     *
+     * @return True if the {@link CharacterInput} is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return this.character == EMPTY_CHAR;
     }
 
+    /**
+     * Updates the {@link CharacterInput}.
+     * <br />
+     * Constructs both the underscore and the character (if present).
+     */
     private void update() {
         this.underscore = new TexturePreprocessor(space ? "_ " : "_")
                 .color(locked ? LOCKED_COLOR : UNLOCKED_COLOR)

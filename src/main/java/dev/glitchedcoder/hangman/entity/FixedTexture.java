@@ -58,6 +58,11 @@ public class FixedTexture extends Entity {
         graphics.drawImage(this.image, getLocation().getX(), getLocation().getY(), null);
     }
 
+    /**
+     * Sets the {@link Texture} of the {@link FixedTexture}.
+     *
+     * @param texture The texture to set to.
+     */
     public void setTexture(@Nonnull Texture texture) {
         Validator.requireNotNull(texture, "Given texture is null!");
         BufferedImage image = texture.asImage();
@@ -66,6 +71,11 @@ public class FixedTexture extends Entity {
         this.bounds = new Rectangle(image.getWidth(), image.getHeight());
     }
 
+    /**
+     * Sets the {@link BufferedImage} of the {@link FixedTexture}.
+     *
+     * @param image The image to set to.
+     */
     public void setImage(@Nonnull BufferedImage image) {
         Validator.requireNotNull(image, "Given image is null!");
         this.image = image;

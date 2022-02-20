@@ -8,6 +8,7 @@ import dev.glitchedcoder.hangman.entity.RenderPriority;
 import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
+import dev.glitchedcoder.hangman.util.Constants;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ public class MainMenu extends Menu {
     private final LightFixture light;
     private final FixedTexture hands;
     private final FixedTexture table;
+    private final FixedTexture version;
     private final MenuComponent[] components;
 
     private static final byte SCALAR = 3;
@@ -46,8 +48,12 @@ public class MainMenu extends Menu {
         BufferedImage table = new TexturePreprocessor(Texture.TABLE_TEXTURE)
                 .scale(4)
                 .build();
+        BufferedImage version = new TexturePreprocessor("v" + Constants.VERSION)
+                .scale(1.25)
+                .build();
         this.hands = new FixedTexture(this, hands);
         this.table = new FixedTexture(this, table);
+        this.version = new FixedTexture(this, version);
         this.table.setRenderPriority(new RenderPriority(125));
         this.light.setRenderPriority(new RenderPriority(126));
         this.hands.setRenderPriority(RenderPriority.MAX);
@@ -65,7 +71,7 @@ public class MainMenu extends Menu {
     }
 
     @Override
-    protected byte getYOffset() {
+    protected byte getComponentSpacing() {
         return 10;
     }
 
@@ -73,10 +79,11 @@ public class MainMenu extends Menu {
     protected void onLoad() {
         super.onLoad();
         autoCenter();
-        addRenderables(light, hands, table);
+        addRenderables(light, hands, table, version);
         hands.setLocation(Location.bottomCenter(hands.getBounds()));
         light.setLocation(Location.topCenter(light.getBounds()));
         table.setLocation(Location.bottomCenter(table.getBounds()));
-        spawnAll(light, hands, table);
+        version.setLocation(Location.bottomRight(version.getBounds()));
+        spawnAll(light, hands, table, version);
     }
 }

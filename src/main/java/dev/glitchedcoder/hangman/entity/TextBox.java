@@ -79,7 +79,7 @@ public class TextBox extends Entity {
 
     @Override
     protected void onUnload() {
-        // todo
+        // do nothing
     }
 
     @Override
@@ -106,6 +106,13 @@ public class TextBox extends Entity {
         }
     }
 
+    /**
+     * Goes on to the next line of the {@link TextBox}.
+     * <br />
+     * If there {@link #hasNextLine() is no next line},
+     * the {@link Runnable} passed onto {@link #onFinish(Runnable)}
+     * will be ran.
+     */
     public void nextLine() {
         lines.remove(0);
         if (lines.isEmpty()) {
@@ -116,11 +123,37 @@ public class TextBox extends Entity {
             update();
     }
 
+    /**
+     * Checks if the {@link TextBox} has a next line.
+     *
+     * @return True if there is a next line, false otherwise.
+     */
+    public boolean hasNextLine() {
+        return !lines.isEmpty();
+    }
+
+    /**
+     * Sets what code to run on finish of the {@link TextBox}'s lines.
+     *
+     * @param runnable The code to run on finish.
+     * @throws IllegalArgumentException Thrown if the given runnable is null.
+     */
     public void onFinish(@Nonnull Runnable runnable) {
         Validator.requireNotNull(runnable, "Given runnable is null!");
         this.onFinish = runnable;
     }
 
+    /**
+     * Adds the given {@link List<String> lines} to the {@link TextBox}.
+     * <br />
+     * Can be used inside of {@link #onFinish(Runnable)}.
+     * <br />
+     * Any singular line should be less than {@link #MAX_CHARACTERS}.
+     *
+     * @param lines The lines to add.
+     * @throws IllegalArgumentException Thrown if the given lines are null.
+     * @throws IllegalArgumentException Thrown if any line is over max characters.
+     */
     public void addLines(@Nonnull List<String> lines) {
         Validator.requireNotNull(lines, "Given lines are null!");
         for (String s : lines) {
@@ -131,12 +164,27 @@ public class TextBox extends Entity {
         update();
     }
 
+    /**
+     * Sets the {@link Color} of the text.
+     *
+     * @param color The color to set the text.
+     * @throws IllegalArgumentException Thrown if the given color is null.
+     */
     public void setTextColor(@Nonnull Color color) {
         Validator.requireNotNull(color, "Given text color is null!");
         this.textColor = color;
         update();
     }
 
+    /**
+     * Sets the {@link Portrait} of the {@link TextBox}.
+     * <br />
+     * All {@link Portrait}s should use the same width and height,
+     * otherwise it'll look funky/out of proper placement.
+     *
+     * @param portrait The portrait to set.
+     * @throws IllegalArgumentException Thrown if the given portrait is null.
+     */
     public void setPortrait(@Nonnull Portrait portrait) {
         Validator.requireNotNull(portrait, "Given portrait is null!");
         this.portraitImage = new TexturePreprocessor(portrait.getTexture())
@@ -144,6 +192,12 @@ public class TextBox extends Entity {
                 .build();
     }
 
+    /**
+     * Updates the {@link TextBox}.
+     * <br />
+     * Separates the current line into words that
+     * do not exceed the {@link #MAX_CHARACTERS_PER_LINE}.
+     */
     private void update() {
         String line = this.lines.get(0);
         Validator.requireNotNull(line, "Line at index 0 returned null.");

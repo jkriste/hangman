@@ -60,7 +60,7 @@ public class PreferencesMenu extends Menu {
     }
 
     @Override
-    protected byte getYOffset() {
+    protected byte getComponentSpacing() {
         return 10;
     }
 }

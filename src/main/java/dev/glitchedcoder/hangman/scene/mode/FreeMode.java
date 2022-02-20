@@ -78,7 +78,7 @@ public class FreeMode extends Scene {
         this.table = new FixedTexture(this, table);
         this.hands = new FixedTexture(this, hands);
         this.overlay = new IconOverlay(this, Color.WHITE, 2.5);
-        this.action = new ScrollableMenuComponent<>(this, new Action[] {Action.GUESS_LETTER, Action.GUESS_WORD}, 2.5);
+        this.action = new ScrollableMenuComponent<>(this, new Action[] { Action.GUESS_LETTER, Action.GUESS_WORD }, 2.5);
         this.textBox = new TextBox(this, Portrait.EXECUTIONER, Color.WHITE);
         this.guesses = (byte) ((26 - this.word.length()) * (2D / 3D));
         this.guessed = new HashMap<>();
@@ -138,7 +138,7 @@ public class FreeMode extends Scene {
             }
             case GUESSING_WORD: {
                 if (key == Key.ENTER) {
-                    if (!textInput.isValid())
+                    if (textInput.isInvalid())
                         return;
                     if (!guessWord(textInput.getInput()) || !textInput.allLocked())
                         guesses -= 2;

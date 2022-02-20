@@ -8,7 +8,6 @@ import java.util.List;
 
 public enum Phase {
 
-    INTRODUCTION(ScriptSection.INTRODUCTION_BEGIN, true, -1),
     PHASE_ONE(ScriptSection.PHASE_ONE, true, 14),
     PHASE_TWO(ScriptSection.PHASE_TWO, true, 10),
     PHASE_THREE(ScriptSection.PHASE_THREE, false, 4);
@@ -38,8 +37,6 @@ public enum Phase {
     @Nullable
     public Phase next() {
         switch (this) {
-            case INTRODUCTION:
-                return PHASE_ONE;
             case PHASE_ONE:
                 return PHASE_TWO;
             case PHASE_TWO:

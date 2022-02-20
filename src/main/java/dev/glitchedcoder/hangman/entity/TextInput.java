@@ -61,6 +61,14 @@ public class TextInput extends Entity {
             input.draw(graphics);
     }
 
+    /**
+     * Gets the word stored in the {@link TextInput}.
+     * <br />
+     * If {@link #isInvalid() invalid}, there will be parts
+     * of the returned string that will have a space.
+     *
+     * @return The word stored in the {@link TextInput}.
+     */
     public String getInput() {
         StringBuilder builder = new StringBuilder();
         for (CharacterInput input : this.list)
@@ -68,11 +76,30 @@ public class TextInput extends Entity {
         return builder.toString();
     }
 
+    /**
+     * Sets the character for the {@link CharacterInput} at the given index.
+     *
+     * @param index The index of the character input.
+     * @param c     The character to put in the input.
+     * @throws IllegalArgumentException Thrown if the index is out of bounds.
+     */
     public void setCharacter(int index, char c) {
         Validator.checkArgument(index >= 0 && index < list.size(), "Invalid index {}", index);
         this.list.get(index).setCharacter(c);
     }
 
+    /**
+     * Handles {@link Key} input.
+     * <br />
+     * The given {@link Key} should be limited to
+     * {@link Key#BACKSPACE} or {@link Key#WRITABLE_KEYS}.
+     * <br />
+     * Used to either fill or empty {@link CharacterInput}s.
+     *
+     * @param key The key to handle.
+     * @throws IllegalArgumentException Thrown if the given key is null.
+     * @throws IllegalArgumentException Thrown if not BACKSPACE or a WRITABLE_KEY.
+     */
     public void handleKeyInput(@Nonnull Key key) {
         Validator.requireNotNull(key, "Given key is null!");
         // check if writable key OR backspace
@@ -91,24 +118,56 @@ public class TextInput extends Entity {
         }
     }
 
-    public boolean isValid() {
+    /**
+     * Checks if the {@link TextInput} is invalid.
+     * <br />
+     * Returns true when any single {@link CharacterInput}
+     * {@link CharacterInput#isEmpty() is empty}.
+     *
+     * @return True if invalid, false otherwise.
+     */
+    public boolean isInvalid() {
         for (CharacterInput input : this.list) {
             if (input.isEmpty())
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
+    /**
+     * Locks the {@link CharacterInput} at the given index.
+     * <br />
+     * Locked {@link CharacterInput}s should not be modifiable
+     * through keys such as {@link Key#BACKSPACE} or {@link Key#WRITABLE_KEYS}.
+     *
+     * @param index The index to lock at.
+     */
     public void lockCharacter(int index) {
         index = Validator.constrain(index, 0, length - 1);
         this.list.get(index).setLocked(true);
     }
 
+    /**
+     * Sets all {@link CharacterInput}s to locked or unlocked.
+     * <br />
+     * Locked {@link CharacterInput}s should not be modifiable
+     * through keys such as {@link Key#BACKSPACE} or {@link Key#WRITABLE_KEYS}.
+     *
+     * @param locked True to lock all, false otherwise.
+     */
     public void lockAll(boolean locked) {
         for (CharacterInput input : this.list)
             input.setLocked(locked);
     }
 
+    /**
+     * Checks if all of the {@link CharacterInput}s are locked.
+     * <br />
+     * Locked {@link CharacterInput}s should not be modifiable
+     * through keys such as {@link Key#BACKSPACE} or {@link Key#WRITABLE_KEYS}.
+     *
+     * @return True if all {@link CharacterInput}s are locked, false otherwise.
+     */
     public boolean allLocked() {
         for (CharacterInput input : this.list) {
             if (input.isUnlocked())
@@ -117,6 +176,15 @@ public class TextInput extends Entity {
         return true;
     }
 
+    /**
+     * Gets the first available {@link CharacterInput}.
+     * <br />
+     * Used for {@link Key#WRITABLE_KEYS}.
+     * <br />
+     * Can return {@code null} if none are available.
+     *
+     * @return The first available {@link CharacterInput} or {@code null}.
+     */
     @Nullable
     private CharacterInput nextAvailable() {
         for (CharacterInput input : list) {
@@ -126,6 +194,15 @@ public class TextInput extends Entity {
         return null;
     }
 
+    /**
+     * Gets the last taken {@link CharacterInput}.
+     * <br />
+     * Used for {@link Key#BACKSPACE}.
+     * <br />
+     * Can return {@code null} if empty.
+     *
+     * @return The last taken {@link CharacterInput} or {@code null}.
+     */
     @Nullable
     private CharacterInput lastTaken() {
         for (byte i = (byte) (length - 1); i >= 0; i--) {

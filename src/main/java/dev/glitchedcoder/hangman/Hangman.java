@@ -37,6 +37,11 @@ public final class Hangman {
         new Thread(window).start();
     }
 
+    /**
+     * Exits the game.
+     * <br />
+     * Will save the current {@link Config} instance.
+     */
     public static synchronized void exit() {
         Config.saveConfig();
         window.stop();
@@ -51,6 +56,13 @@ public final class Hangman {
         System.exit(0);
     }
 
+    /**
+     * Restarts the game.
+     * <br />
+     * Will do all the same things {@link #exit()} does,
+     * but starts a {@link ProcessBuilder} for the system
+     * to execute in order to restart the game.
+     */
     public static synchronized void restart() {
         ProcessBuilder builder;
         if (System.getProperty("os.name").toUpperCase(Locale.ROOT).contains("WIN"))

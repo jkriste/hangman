@@ -61,6 +61,14 @@ public enum Key {
     ENTER(KeyEvent.VK_ENTER, null);
 
     private static final Key[] values = values();
+
+    /**
+     * Used as an Integer-to-{@link Key} lookup.
+     * <br />
+     * Since the implementation of this is a {@link HashMap},
+     * the time complexity of a single integer to {@link Key}
+     * lookup is O(1) and is as efficient as it can get.
+     */
     private static final Map<Integer, Key> LOOKUP;
 
     static {
@@ -155,8 +163,6 @@ public enum Key {
 
     @Nullable
     public static Key of(int key) {
-        if (!LOOKUP.containsKey(key))
-            return null;
-        return LOOKUP.get(key);
+        return LOOKUP.getOrDefault(key, null);
     }
 }

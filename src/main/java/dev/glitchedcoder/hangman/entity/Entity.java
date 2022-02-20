@@ -95,6 +95,11 @@ public abstract class Entity implements Renderable {
         this.visible = true;
     }
 
+    /**
+     * Gets the {@link RenderPriority} of the {@link Entity}.
+     *
+     * @return The {@link RenderPriority} of the {@link Entity}.
+     */
     @Nonnull
     @Override
     public RenderPriority getRenderPriority() {
@@ -202,6 +207,11 @@ public abstract class Entity implements Renderable {
         this.loc.set(location);
     }
 
+    /**
+     * Sets the {@link RenderPriority} of the {@link Entity}.
+     *
+     * @param priority The render priority to set.
+     */
     public void setRenderPriority(@Nonnull RenderPriority priority) {
         Validator.requireNotNull(priority, "Given priority is null!");
         this.priority.set(priority);

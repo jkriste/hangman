@@ -59,20 +59,29 @@ public abstract class Menu extends Scene {
     protected abstract MenuComponent[] getComponents();
 
     /**
-     * Gets the Y-offset for {@link MenuComponent}s.
+     * Gets the spacing for {@link MenuComponent}s.
      * <br />
      * This acts as the artificial spacing between
      * {@link MenuComponent}s.
      * <br />
      * Only used when calling {@link #autoCenter()}.
      *
-     * @return The Y-offset for {@link MenuComponent}s.
+     * @return The spacing for {@link MenuComponent}s.
      */
-    protected byte getYOffset() {
+    protected byte getComponentSpacing() {
         return 0;
     }
 
-    protected int getComponentOffset() {
+    /**
+     * Gets the Y-offset for {@link MenuComponent}s.
+     * <br />
+     * Used to shift all {@link MenuComponent} upward or downward.
+     * <br />
+     * Only used when calling {@link #autoCenter()}.
+     *
+     * @return The Y-offset for {@link MenuComponent}s.
+     */
+    protected int getComponentYOffset() {
         return 0;
     }
 
@@ -177,15 +186,15 @@ public abstract class Menu extends Scene {
         }
     }
 
-    protected void autoCenter() {
+    protected final void autoCenter() {
         MenuComponent[] components = getComponents();
-        byte yOffset = getYOffset();
+        byte yOffset = getComponentSpacing();
         Rectangle totalSize = new Rectangle(0, (components[0].getBounds().height + yOffset) * components.length);
         Location centered = Location.center(totalSize);
         for (byte b = 0; b < components.length; b++) {
             Rectangle bounds = components[b].getBounds();
             Location loc = Location.center(bounds);
-            loc.setY(centered.getY() + (b * (bounds.height + yOffset)) + getComponentOffset());
+            loc.setY(centered.getY() + (b * (bounds.height + yOffset)) + getComponentYOffset());
             components[b].setLocation(loc);
         }
     }

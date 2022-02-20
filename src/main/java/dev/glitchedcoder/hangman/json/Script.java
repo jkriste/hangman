@@ -19,14 +19,34 @@ public final class Script {
     private Map<String, List<String>> lines;
 
     private static Script instance;
+    private static final Random RANDOM = new Random();
 
+    /**
+     * Gets the {@link Script} instance.
+     * <br />
+     * If the current {@link Script} instance is
+     * {@code null}, it will be {@link #loadScript() loaded}.
+     *
+     * @return The {@link Script} instance.
+     * @throws IllegalArgumentException Thrown if the script instance is null.
+     */
     public static Script getScript() {
         if (instance == null)
             loadScript();
         return Validator.requireNotNull(instance);
     }
 
+    /**
+     * Loads the {@link Script} from the resources.
+     * <br />
+     * If the current {@link Script} instance isn't
+     * {@code null}, this method will do nothing.
+     *
+     * @throws IllegalArgumentException Thrown if the script couldn't be loaded.
+     */
     public static void loadScript() {
+        if (instance != null)
+            return;
         Gson gson = Constants.GSON;
         InputStream in = Hangman.class.getResourceAsStream("/script/script.json");
         Validator.requireNotNull(in, "Could not load script!");
@@ -34,10 +54,26 @@ public final class Script {
         instance = gson.fromJson(reader, Script.class);
     }
 
+    /**
+     * Retrieves a random crime from the list of crimes.
+     * <br />
+     * This is used in the {@link ScriptSection#INTRODUCTION_BEGIN}
+     * script section.
+     * <br />
+     * Hopefully you find them as funny as I did.
+     *
+     * @return A random crime from the crime list.
+     */
     public String randomCrime() {
-        return crimes.get(new Random().nextInt(crimes.size()));
+        return crimes.get(RANDOM.nextInt(crimes.size()));
     }
 
+    /**
+     * Gets the {@link List<String> script} for the given {@link ScriptSection}.
+     *
+     * @param section The section to retrieve.
+     * @return The script for the given {@link ScriptSection}.
+     */
     public List<String> getSection(@Nonnull ScriptSection section) {
         return lines.get(section.getId());
     }

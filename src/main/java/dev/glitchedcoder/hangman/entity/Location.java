@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
-@EqualsAndHashCode(of = {"x", "y"})
+@EqualsAndHashCode(of = { "x", "y" })
 public final class Location {
 
     private short x;

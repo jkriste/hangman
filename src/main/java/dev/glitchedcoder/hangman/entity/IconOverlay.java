@@ -85,6 +85,11 @@ public class IconOverlay extends Entity {
         return RenderPriority.MIN;
     }
 
+    /**
+     * Checks if any {@link Icon}s exist in the {@link IconOverlay}.
+     *
+     * @return True if {@link Icon}s exist, false otherwise.
+     */
     public boolean hasIcons() {
         for (byte i = 0; i < MATRIX_SIZE; i++) {
             for (byte j = 0; j < MATRIX_SIZE; j++) {
@@ -95,6 +100,16 @@ public class IconOverlay extends Entity {
         return false;
     }
 
+    /**
+     * Sets the given {@link Icon} at the given x and y indices.
+     * <br />
+     * The given {@code x} and {@code y} are constrained between
+     * {@code ( O,} {@link #MATRIX_SIZE} {@code )}, inclusive.
+     *
+     * @param icon The icon to set.
+     * @param x The row index.
+     * @param y The col index.
+     */
     public void setIcon(@Nonnull Icon icon, int x, int y) {
         x = Validator.constrain(x, 0, MATRIX_SIZE - 1);
         y = Validator.constrain(y, 0, MATRIX_SIZE - 1);
@@ -102,6 +117,13 @@ public class IconOverlay extends Entity {
         update();
     }
 
+    /**
+     * Sets the {@link IconOverlay} {@link Icon} matrix with the given.
+     * <br />
+     * Should be a max size of {@link #MATRIX_SIZE}.
+     *
+     * @param iconMatrix The matrix to set.
+     */
     public void setIcons(@Nonnull Icon[][] iconMatrix) {
         for (byte i = 0; i < iconMatrix.length; i++) {
             for (byte j = 0; j < iconMatrix[i].length; j++) {
@@ -111,6 +133,9 @@ public class IconOverlay extends Entity {
         update();
     }
 
+    /**
+     * Clears all {@link Icon}s from the {@link IconOverlay}.
+     */
     public void clear() {
         for (byte i = 0; i < MATRIX_SIZE; i++) {
             for (byte j = 0; j < MATRIX_SIZE; j++) {
@@ -119,6 +144,11 @@ public class IconOverlay extends Entity {
         }
     }
 
+    /**
+     * Removes the first instance of the given {@link Icon}, if any.
+     *
+     * @param icon The icon to remove.
+     */
     public void removeIcon(@Nonnull Icon icon) {
         for (byte i = 0; i < MATRIX_SIZE; i++) {
             for (byte j = 0; j < MATRIX_SIZE; j++) {
@@ -131,6 +161,11 @@ public class IconOverlay extends Entity {
         }
     }
 
+    /**
+     * Updates the {@link IconOverlay}.
+     * <br />
+     * Builds a 2d-matrix imitation of the contained {@link Icon}s.
+     */
     private void update() {
         for (byte b = 0; b < MATRIX_SIZE; b++) {
             BufferedImage image = null;

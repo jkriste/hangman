@@ -72,14 +72,17 @@ public class ApiKeyEntry extends Scene {
     protected void onKeyPress(Key key) {
         if (key == Key.ENTER) {
             footer.setVisible(false);
-            if (!textInput.isValid()) {
+            if (textInput.isInvalid()) {
                 return;
             }
+            textInput.lockAll(true);
             config.setApiKey(textInput.getInput());
             if (ApiRequest.checkApiKey())
                 setScene(new MainMenu());
-            else
+            else {
                 footer.setVisible(true);
+                textInput.lockAll(false);
+            }
         } else
             textInput.handleKeyInput(key);
     }

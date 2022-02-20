@@ -32,7 +32,7 @@ public class WordSelectionMenu extends Menu {
         MenuComponent submit = new MenuComponent(this, "Submit", 3);
         MenuComponent back = new MenuComponent(this, "Back", 3);
         submit.onSelect(() -> {
-            if (!input.isValid())
+            if (input.isInvalid())
                 return;
             FreeMode mode = new FreeMode(input.getInput());
             setScene(mode);
@@ -60,12 +60,12 @@ public class WordSelectionMenu extends Menu {
     }
 
     @Override
-    protected byte getYOffset() {
+    protected byte getComponentSpacing() {
         return 10;
     }
 
     @Override
-    protected int getComponentOffset() {
+    protected int getComponentYOffset() {
         return (int) (205 * config.getResolution().getScalar());
     }
 

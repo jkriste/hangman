@@ -27,14 +27,38 @@ public enum Resolution {
         this.scalar = scalar;
     }
 
+    /**
+     * Gets the width of the {@link Resolution}.
+     *
+     * @return The width.
+     */
     public short getWidth() {
         return width;
     }
 
+    /**
+     * Gets the height of the {@link Resolution}.
+     *
+     * @return The height.
+     */
     public short getHeight() {
         return height;
     }
 
+    /**
+     * Gets the scalar for the {@link Resolution}.
+     * <br />
+     * Since all {@link Resolution}s share the same aspect ratio,
+     * this is calculated by simply taking the base {@link Resolution},
+     * aka {@link #P576} and diving either by width or height. i.e.,
+     * {@code 1280 / 1024 = 1.25}.
+     * <br />
+     * This scalar is used by {@link dev.glitchedcoder.hangman.ui.TexturePreprocessor}
+     * in order to scale up {@link dev.glitchedcoder.hangman.ui.Texture}s to make sure
+     * that the {@link Scene} looks the same for every {@link Resolution}.
+     *
+     * @return The scalar.
+     */
     public double getScalar() {
         return scalar;
     }

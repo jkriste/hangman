@@ -39,7 +39,6 @@ public class PhaseMode extends Scene {
     private byte guesses;
     private GameState state;
     private FixedTexture letters;
-    private FixedTexture guessText;
 
     private final Phase phase;
     private final String word;
@@ -50,6 +49,7 @@ public class PhaseMode extends Scene {
     private final FixedTexture hands;
     private final TextInput textInput;
     private final IconOverlay overlay;
+    private final FixedTexture guessText;
     private final Map<Character, Boolean> guessed;
     private final ScrollableMenuComponent<Action> action;
 
@@ -72,15 +72,19 @@ public class PhaseMode extends Scene {
         BufferedImage hands = new TexturePreprocessor(nsfl ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
                 .scale(4)
                 .build();
+        BufferedImage guessText = new TexturePreprocessor(String.valueOf(guesses))
+                .color(Color.RED)
+                .scale(3)
+                .removeBackground()
+                .build();
         this.table = new FixedTexture(this, table);
         this.hands = new FixedTexture(this, hands);
+        this.guessText = new FixedTexture(this, guessText);
         this.overlay = new IconOverlay(this, Color.WHITE, 2.5);
-        this.action = new ScrollableMenuComponent<>(this, new Action[] {Action.GUESS_LETTER, Action.GUESS_WORD}, 2.5);
+        this.action = new ScrollableMenuComponent<>(this, new Action[] { Action.GUESS_LETTER, Action.GUESS_WORD }, 2.5);
         this.textBox = new TextBox(this, Portrait.EXECUTIONER, Color.WHITE);
         this.guesses = (byte) ((26 - this.word.length()) * (2D / 3D));
         this.guessed = new HashMap<>();
-        updateGuesses();
-        setState(GameState.READING_TEXT);
         this.textBox.addLines(phase.getScript());
         this.textBox.onFinish(() -> setState(GameState.PICKING_OPTION));
     }
@@ -99,11 +103,15 @@ public class PhaseMode extends Scene {
         this.light.setRenderPriority(new RenderPriority(124));
         this.hands.setRenderPriority(new RenderPriority(125));
         this.textBox.setRenderPriority(RenderPriority.MAX);
+        this.overlay.setIcons(GameState.READING_TEXT.getOverlay());
         addRenderables(textInput, overlay, table, hands, light, guessText, action, textBox);
         spawnAll(textInput, overlay, table, hands, light, guessText, action, textBox);
         this.action.onSelect(() -> setState(
                 action.getSelected() == Action.GUESS_WORD ? GameState.GUESSING_WORD : GameState.GUESSING_LETTER
         ));
+        updateGuessedLetters();
+        updateGuesses();
+        setState(textBox.hasNextLine() ? GameState.READING_TEXT : GameState.PICKING_OPTION);
     }
 
     @Override
@@ -137,7 +145,7 @@ public class PhaseMode extends Scene {
             }
             case GUESSING_WORD: {
                 if (key == Key.ENTER) {
-                    if (!textInput.isValid())
+                    if (textInput.isInvalid())
                         return;
                     if (!guessWord(textInput.getInput()) || !textInput.allLocked())
                         guesses -= 2;
@@ -151,6 +159,10 @@ public class PhaseMode extends Scene {
             case READING_TEXT:
             case GAME_OVER:
             case GAME_WON:
+                if (!textBox.hasNextLine()) {
+                    setState(GameState.PICKING_OPTION);
+                    return;
+                }
                 if (key == Key.ENTER)
                     textBox.nextLine();
                 break;
@@ -235,10 +247,7 @@ public class PhaseMode extends Scene {
                 .scale(3)
                 .removeBackground()
                 .build();
-        if (this.guessText == null) {
-            this.guessText = new FixedTexture(this, guessText);
-        } else
-            this.guessText.setImage(guessText);
+        this.guessText.setImage(guessText);
         this.guessText.setLocation(Location.bottomRight(this.guessText.getBounds()));
     }
 
