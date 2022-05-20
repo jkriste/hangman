@@ -1,5 +1,7 @@
 package dev.glitchedcoder.hangman.scene.mode;
 
+import dev.glitchedcoder.hangman.entity.FadeIn;
+import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.LightFixture;
@@ -13,7 +15,6 @@ import dev.glitchedcoder.hangman.scene.EndScreen;
 import dev.glitchedcoder.hangman.scene.menu.PauseMenu;
 import dev.glitchedcoder.hangman.scene.menu.ScrollableMenuComponent;
 import dev.glitchedcoder.hangman.ui.CharMap;
-import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.ui.Portrait;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
@@ -27,6 +28,7 @@ import lombok.EqualsAndHashCode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,16 +42,18 @@ public class FreeMode extends Scene {
     private byte guesses;
     private GameState state;
     private FixedTexture letters;
-    private FixedTexture guessText;
 
     private final String word;
     private final Set<Key> keys;
+    private final FadeIn fadeIn;
+    private final FadeOut fadeOut;
     private final TextBox textBox;
     private final LightFixture light;
     private final FixedTexture table;
     private final FixedTexture hands;
     private final TextInput textInput;
     private final IconOverlay overlay;
+    private final FixedTexture guessText;
     private final Map<Character, Boolean> guessed;
     private final ScrollableMenuComponent<Action> action;
 
@@ -71,23 +75,33 @@ public class FreeMode extends Scene {
         BufferedImage table = new TexturePreprocessor(Texture.TABLE_TEXTURE)
                 .scale(4)
                 .build();
-        boolean nsfl = config.getNSFL() == NSFL.ON;
-        BufferedImage hands = new TexturePreprocessor(nsfl ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
+        BufferedImage hands = new TexturePreprocessor(config.getNSFL().isOn() ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
                 .scale(4)
+                .build();
+        BufferedImage guessText = new TexturePreprocessor(String.valueOf(guesses))
+                .color(Color.RED)
+                .scale(3)
+                .removeBackground()
                 .build();
         this.table = new FixedTexture(this, table);
         this.hands = new FixedTexture(this, hands);
         this.overlay = new IconOverlay(this, Color.WHITE, 2.5);
+        this.guessText = new FixedTexture(this, guessText);
         this.action = new ScrollableMenuComponent<>(this, new Action[] { Action.GUESS_LETTER, Action.GUESS_WORD }, 2.5);
         this.textBox = new TextBox(this, Portrait.EXECUTIONER, Color.WHITE);
+        this.fadeIn = new FadeIn(this, Color.BLACK, (byte) 11);
+        this.fadeOut = new FadeOut(this, Color.BLACK, (byte) 11);
         this.guesses = (byte) ((26 - this.word.length()) * (2D / 3D));
         this.guessed = new HashMap<>();
-        updateGuesses();
         setState(GameState.PICKING_OPTION);
     }
 
     @Override
     protected void onLoad() {
+        this.fadeIn.onFinish(() -> {
+            action.spawn();
+            fadeIn.dispose();
+        });
         this.textInput.setLocation(Location.center(textInput.getBounds()));
         this.action.setLocation(Location.center(action.getBounds()));
         this.action.getLocation().setY(textInput.getLocation().getY() + textBox.getBounds().height / 2);
@@ -99,12 +113,14 @@ public class FreeMode extends Scene {
         this.overlay.setLocation(Location.bottomLeft(overlay.getBounds()));
         this.light.setRenderPriority(new RenderPriority(124));
         this.hands.setRenderPriority(new RenderPriority(125));
-        this.textBox.setRenderPriority(RenderPriority.MAX);
-        addRenderables(textInput, overlay, table, hands, light, guessText, action);
-        spawnAll(textInput, overlay, table, hands, light, guessText, action);
-        this.action.onSelect(() -> setState(
-                action.getSelected() == Action.GUESS_WORD ? GameState.GUESSING_WORD : GameState.GUESSING_LETTER
-        ));
+        this.textBox.setRenderPriority(new RenderPriority(126));
+        addRenderables(textInput, overlay, table, hands, light, guessText, action, fadeIn, fadeOut);
+        spawnAll(textInput, overlay, table, hands, light, guessText);
+        updateGuessedLetters();
+        updateGuesses();
+        if (!fadeIn.isDead())
+            fadeIn.spawn();
+        this.action.onSelect(() -> setState(action.getSelected().getState()));
     }
 
     @Override
@@ -168,6 +184,11 @@ public class FreeMode extends Scene {
         }
     }
 
+    @Override
+    protected void focusLost(FocusEvent event) {
+        setScene(new PauseMenu(this));
+    }
+
     private void setState(@Nonnull GameState state) {
         this.state = state;
         switch (state) {
@@ -201,7 +222,8 @@ public class FreeMode extends Scene {
                 }
                 script.set(index, script.get(index).replace("%word%", word));
                 textBox.addLines(script);
-                textBox.onFinish(() -> setScene(new EndScreen(false)));
+                fadeOut.onFinish(() -> setScene(new EndScreen(false)));
+                textBox.onFinish(fadeOut::spawn);
                 addRenderable(textBox);
                 textBox.spawn();
                 break;
@@ -215,7 +237,8 @@ public class FreeMode extends Scene {
                 textBox.setVisible(true);
                 List<String> script = Script.getScript().getSection(ScriptSection.GAME_WON);
                 textBox.addLines(script);
-                textBox.onFinish(() -> setScene(new EndScreen(true)));
+                fadeOut.onFinish(() -> setScene(new EndScreen(true)));
+                textBox.onFinish(fadeOut::spawn);
                 addRenderable(textBox);
                 textBox.spawn();
                 break;
@@ -234,10 +257,7 @@ public class FreeMode extends Scene {
                 .scale(3)
                 .removeBackground()
                 .build();
-        if (this.guessText == null) {
-            this.guessText = new FixedTexture(this, guessText);
-        } else
-            this.guessText.setImage(guessText);
+        this.guessText.setImage(guessText);
         this.guessText.setLocation(Location.bottomRight(this.guessText.getBounds()));
     }
 
@@ -293,7 +313,7 @@ public class FreeMode extends Scene {
                 .build();
         if (letters == null) {
             letters = new FixedTexture(this, image);
-            letters.setRenderPriority(RenderPriority.MAX);
+            letters.setRenderPriority(new RenderPriority(126));
             addRenderable(letters);
             letters.spawn();
         } else

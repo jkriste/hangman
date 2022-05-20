@@ -1,8 +1,8 @@
 package dev.glitchedcoder.hangman.window;
 
 import dev.glitchedcoder.hangman.Hangman;
-import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.entity.Location;
+import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.util.Constants;
 
@@ -11,18 +11,15 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
  * The {@link Window} of the program.
  * <br />
- * Handles the main game thread as well as listening for
- * {@link #focusGained(FocusEvent)} and {@link #focusLost(FocusEvent)} events.
+ * Handles the main game thread.
  */
-public final class Window extends JFrame implements Runnable, FocusListener {
+public final class Window extends JFrame implements Runnable {
 
     private volatile boolean running;
 
@@ -40,7 +37,7 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         setTitle(Constants.TITLE);
         setIconImage(Texture.EXECUTIONER.asImage());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        addFocusListener(this);
+        addFocusListener(view);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -56,7 +53,6 @@ public final class Window extends JFrame implements Runnable, FocusListener {
         this.running = true;
         final double TIME_BETWEEN_UPDATES = 1000000000D / FRAMES_PER_SECOND;
         double lastUpdate = System.nanoTime();
-        double lastRender;
         long timer = System.currentTimeMillis();
         byte updateCount = 0;
         setVisible(true);
@@ -71,8 +67,7 @@ public final class Window extends JFrame implements Runnable, FocusListener {
             if (now - lastUpdate > TIME_BETWEEN_UPDATES)
                 lastUpdate = now - TIME_BETWEEN_UPDATES;
             view.draw();
-            lastRender = now;
-            while (now - lastRender < TIME_BETWEEN_UPDATES && now - lastUpdate < TIME_BETWEEN_UPDATES) {
+            while (now - lastUpdate < TIME_BETWEEN_UPDATES) {
                 Thread.yield();
                 try {
                     Thread.sleep(2);
@@ -88,16 +83,6 @@ public final class Window extends JFrame implements Runnable, FocusListener {
             }
         }
         view.close();
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-        view.focusGained(e);
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        view.focusLost(e);
     }
 
     /**

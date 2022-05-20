@@ -1,6 +1,5 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
-import dev.glitchedcoder.hangman.scene.ApiKeyEntry;
 import dev.glitchedcoder.hangman.scene.mode.FreeMode;
 import dev.glitchedcoder.hangman.scene.mode.StoryIntro;
 import lombok.EqualsAndHashCode;

@@ -19,22 +19,21 @@ public final class TexturePreprocessor {
     private boolean removeBg;
     private BufferedImage image;
 
-    private static final Config CONFIG;
+    private static final Color BACKGROUND;
     private static final Color[] COLOR_SWATCH;
-    private static final Color BACKGROUND = Color.BLACK;
 
     static {
+        BACKGROUND = Color.BLACK;
         COLOR_SWATCH = new Color[] {
                 new Color(64, 64, 64),
                 new Color(128, 128, 128),
                 new Color(192, 192, 192),
                 new Color(255, 255, 255)
         };
-        CONFIG = Config.getConfig();
     }
 
     public TexturePreprocessor(@Nonnull Texture texture) {
-        this.scalar = 1D;
+        this.scalar = Config.getConfig().getResolution().getScalar();
         this.image = texture.asImage();
     }
 
@@ -42,11 +41,11 @@ public final class TexturePreprocessor {
         Validator.requireNotNull(text, "Given text is null!");
         Validator.checkArgument(!text.isEmpty(), "Given text is empty.");
         this.text = text;
-        this.scalar = 1D;
+        this.scalar = Config.getConfig().getResolution().getScalar();
     }
 
     public TexturePreprocessor(@Nonnull BufferedImage image) {
-        this.scalar = 1D;
+        this.scalar = Config.getConfig().getResolution().getScalar();
         this.image = image;
     }
 
@@ -123,8 +122,6 @@ public final class TexturePreprocessor {
             for (int i = 1; i < images.length; i++)
                 this.image = stitch(this.image, images[i]);
         }
-        // multiply the scalar to the current resolution's scalar
-        this.scalar *= CONFIG.getResolution().getScalar();
         // remove the background if requested
         if (removeBg) {
             int rgb = BACKGROUND.getRGB();
@@ -152,15 +149,13 @@ public final class TexturePreprocessor {
             }
         }
         // scale up the image
-        if (this.scalar > 1D) {
-            int newWidth = (int) (this.image.getWidth() * this.scalar);
-            int newHeight = (int) (this.image.getHeight() * this.scalar);
-            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-            Graphics graphics = newImage.getGraphics();
-            graphics.drawImage(this.image, 0, 0, newWidth, newHeight, null);
-            graphics.dispose();
-            this.image = newImage;
-        }
+        int newWidth = (int) (this.image.getWidth() * this.scalar);
+        int newHeight = (int) (this.image.getHeight() * this.scalar);
+        BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics graphics = newImage.getGraphics();
+        graphics.drawImage(this.image, 0, 0, newWidth, newHeight, null);
+        graphics.dispose();
+        this.image = newImage;
         return this.image;
     }
 
@@ -170,7 +165,7 @@ public final class TexturePreprocessor {
      * It should be noted that {@code c1} is being adjusted
      * to look more like {@code c2}.
      * <br />
-     * Uses <a href="https://en.wikipedia.org/wiki/Relative_luminance>Relative Luminance"</a>
+     * Uses <a href="https://en.wikipedia.org/wiki/Relative_luminance">Relative Luminance</a>
      * to adjust the {@link Color}.
      *
      * @param c1 The color to be adjusted.

@@ -10,10 +10,11 @@ import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class View extends Canvas {
+public final class View extends Canvas implements FocusListener {
 
     private final AtomicReference<Scene> scene;
 
@@ -28,6 +29,7 @@ public final class View extends Canvas {
 
     public View() {
         this.scene = new AtomicReference<>(null);
+        setFocusable(true);
     }
 
     /**
@@ -115,7 +117,10 @@ public final class View extends Canvas {
      *
      * @param event The focus event.
      */
-    void focusLost(FocusEvent event) {
+    @Override
+    public void focusLost(FocusEvent event) {
+        requestFocus();
+        requestFocusInWindow();
         Scene scene = getScene();
         if (scene == null)
             return;
@@ -130,7 +135,10 @@ public final class View extends Canvas {
      *
      * @param event The focus event.
      */
-    void focusGained(FocusEvent event) {
+    @Override
+    public void focusGained(FocusEvent event) {
+        requestFocus();
+        requestFocusInWindow();
         Scene scene = getScene();
         if (scene == null)
             return;

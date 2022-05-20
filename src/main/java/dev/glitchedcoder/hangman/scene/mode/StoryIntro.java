@@ -1,5 +1,7 @@
 package dev.glitchedcoder.hangman.scene.mode;
 
+import dev.glitchedcoder.hangman.entity.FadeIn;
+import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.LightFixture;
@@ -9,7 +11,6 @@ import dev.glitchedcoder.hangman.entity.TextBox;
 import dev.glitchedcoder.hangman.json.Script;
 import dev.glitchedcoder.hangman.json.ScriptSection;
 import dev.glitchedcoder.hangman.ui.Icon;
-import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.ui.Portrait;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
@@ -27,7 +28,9 @@ import java.util.Set;
 public class StoryIntro extends Scene {
 
     private final Set<Key> keys;
+    private final FadeIn fadeIn;
     private final TextBox textBox;
+    private final FadeOut fadeOut;
     private final LightFixture light;
     private final FixedTexture table;
     private final FixedTexture hands;
@@ -41,20 +44,26 @@ public class StoryIntro extends Scene {
         BufferedImage table = new TexturePreprocessor(Texture.TABLE_TEXTURE)
                 .scale(4)
                 .build();
-        boolean nsfl = config.getNSFL() == NSFL.ON;
-        BufferedImage hands = new TexturePreprocessor(nsfl ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
+        BufferedImage hands = new TexturePreprocessor(config.getNSFL().isOn() ? Texture.HANDS_BOUND : Texture.HANDS_UNBOUND)
                 .scale(4)
                 .build();
         this.table = new FixedTexture(this, table);
         this.hands = new FixedTexture(this, hands);
+        this.fadeIn = new FadeIn(this, Color.BLACK, (byte) 11);
+        this.fadeOut = new FadeOut(this, Color.BLACK, (byte) 11);
     }
 
     @Override
     protected void onLoad() {
+        fadeIn.onFinish(() -> {
+            textBox.spawn();
+            fadeIn.dispose();
+        });
+        fadeOut.onFinish(() -> setScene(new StoryMode(Phase.PHASE_ONE)));
         overlay.setIcon(Icon.ENTER, 2, 0);
         Script script = Script.getScript();
         String crime = script.randomCrime();
-        List<String> introBegin = script.getSection(ScriptSection.INTRODUCTION_BEGIN);
+        List<String> introBegin = script.getSection(ScriptSection.INTRODUCTION);
         byte index = 0;
         for (byte b = 0; b < introBegin.size(); b++) {
             if (introBegin.get(b).contains("%crime%"))
@@ -64,16 +73,19 @@ public class StoryIntro extends Scene {
         textBox.addLines(introBegin);
         textBox.onFinish(() -> {
             textBox.setPortrait(Portrait.EXECUTIONER);
-            textBox.addLines(script.getSection(ScriptSection.INTRODUCTION_END));
-            textBox.onFinish(() -> setScene(new PhaseMode(Phase.PHASE_ONE)));
+            textBox.addLines(script.getSection(
+                    config.hasPlayedBefore() ? ScriptSection.INTRODUCTION_NO_TUTORIAL : ScriptSection.INTRODUCTION_TUTORIAL
+            ));
+            textBox.onFinish(fadeOut::spawn);
         });
         this.light.setRenderPriority(new RenderPriority(124));
         this.hands.setRenderPriority(new RenderPriority(125));
         this.textBox.setRenderPriority(RenderPriority.MAX);
+        this.hands.setLocation(Location.bottomCenter(hands.getBounds()));
         this.overlay.setLocation(Location.bottomLeft(overlay.getBounds()));
         this.textBox.setLocation(Location.bottomCenter(textBox.getBounds()));
-        addRenderables(hands, table, light, overlay, textBox);
-        spawnAll(hands, table, light, overlay, textBox);
+        addRenderables(hands, table, light, overlay, textBox, fadeIn, fadeOut);
+        spawnAll(hands, table, light, overlay, fadeIn);
     }
 
     @Override
@@ -88,6 +100,8 @@ public class StoryIntro extends Scene {
 
     @Override
     protected void onKeyPress(Key key) {
+        if (fadeIn.shouldDraw() || fadeOut.shouldDraw())
+            return;
         if (key == Key.ENTER)
             textBox.nextLine();
     }

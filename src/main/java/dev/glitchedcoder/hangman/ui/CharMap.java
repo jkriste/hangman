@@ -64,7 +64,8 @@ public enum CharMap {
     LEFT_CAROT('<', Texture.SOLID_LEFT_ARROW),
     RIGHT_CAROT('>', Texture.SOLID_RIGHT_ARROW),
     UNDERSCORE('_', Texture.UNDERSCORE),
-    APOSTROPHE('\'', Texture.APOSTROPHE);
+    APOSTROPHE('\'', Texture.APOSTROPHE),
+    COLON(':', Texture.COLON);
 
     /**
      * Used as a character-to-{@link Texture} lookup.

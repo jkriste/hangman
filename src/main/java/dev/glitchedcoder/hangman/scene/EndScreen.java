@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.scene;
 
+import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.LightFixture;
@@ -25,6 +26,7 @@ public class EndScreen extends Scene {
 
     private final boolean won;
     private final Set<Key> keys;
+    private final FadeOut fadeOut;
     private final Sprite hangingMan;
     private final LightFixture light;
     private final IconOverlay overlay;
@@ -43,13 +45,15 @@ public class EndScreen extends Scene {
         this.keys = KeySelector.create().with(Key.ENTER).build();
         this.hangingMan = new Sprite(this, AnimatedTexture.HANGING_MAN, (byte) 2, 4);
         this.light = new LightFixture(this, (byte) 10, 4.1);
+        this.fadeOut = new FadeOut(this, Color.BLACK, (byte) 11);
     }
 
     @Override
     protected void onLoad() {
+        this.fadeOut.onFinish(() -> setScene(new MainMenu()));
         hangingMan.setRenderPriority(RenderPriority.MAX);
         light.setRenderPriority(RenderPriority.HIGH);
-        addRenderables(overlay, gameText, light, hangingMan);
+        addRenderables(overlay, gameText, light, hangingMan, fadeOut);
         light.setLocation(Location.topCenter(light.getBounds()));
         hangingMan.setLocation(Location.topCenter(hangingMan.getBounds()));
         overlay.setLocation(Location.bottomLeft(overlay.getBounds()));
@@ -72,6 +76,6 @@ public class EndScreen extends Scene {
     @Override
     protected void onKeyPress(Key key) {
         if (key == Key.ENTER)
-            setScene(new MainMenu());
+            fadeOut.spawn();
     }
 }

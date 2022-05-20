@@ -12,6 +12,7 @@ public enum EntityType {
     TEXT_INPUT,
     ICON_OVERLAY,
     LIGHT_FIXTURE,
-    SPRITE
+    SPRITE,
+    TIMER
 
 }

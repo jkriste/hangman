@@ -13,13 +13,14 @@ public final class Constants {
 
     public static final File JAR;
     public static final Gson GSON;
+    public static final String SCRIPT;
     public static final String API_URL;
     public static final File CONFIG_FILE;
     public static final File APPDATA_DIR;
     public static final byte MIN_WORD_LENGTH;
     public static final byte MAX_WORD_LENGTH;
     public static final List<String> UNIX_ARGS;
-    public static final String VERSION = "1.0.1";
+    public static final String VERSION = "1.1.0";
     public static final List<String> WINDOWS_ARGS;
     public static final String TITLE = "Hanged Men";
 
@@ -62,6 +63,7 @@ public final class Constants {
                 "cmd", "/c", "ping", "localhost", "-n", "2", ">", "nul",
                 "&&", "java", "-jar", JAR.getAbsolutePath()
         );
+        SCRIPT = "/script/script.json";
     }
 
     private Constants() {

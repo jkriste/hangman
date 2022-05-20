@@ -24,6 +24,7 @@ public final class Config {
 
     private NSFL nsfl;
     private String apiKey;
+    private boolean playedBefore;
     private Resolution resolution;
 
     private static Config instance;
@@ -37,6 +38,7 @@ public final class Config {
             return;
         this.apiKey = "";
         this.nsfl = NSFL.OFF;
+        this.playedBefore = false;
         this.resolution = Resolution.P576;
     }
 
@@ -149,6 +151,21 @@ public final class Config {
     }
 
     /**
+     * Gets whether the user has played before.
+     * <br />
+     * If false, the game will add on a tutorial
+     * in the form of the script.
+     * <br />
+     * If true, the game will not add on a tutorial
+     * in the script.
+     *
+     * @return True if played before, false otherwise.
+     */
+    public boolean hasPlayedBefore() {
+        return playedBefore;
+    }
+
+    /**
      * Gets the stored {@link Resolution}.
      * <br />
      * The {@link Resolution} returned may not
@@ -192,6 +209,21 @@ public final class Config {
         Validator.requireNotNull(apiKey, "Given API key is null!");
         Validator.checkArgument(apiKey.length() == 5, "Given API key '{}' has invalid length.", apiKey);
         this.apiKey = apiKey.toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Sets whether the user has played before.
+     * <br />
+     * If false, the game will add on a tutorial
+     * in the form of a script.
+     * <br />
+     * If true, the game will skip the tutorial
+     * in the script.
+     *
+     * @param playedBefore Whether the user has played before.
+     */
+    public void setPlayedBefore(boolean playedBefore) {
+        this.playedBefore = playedBefore;
     }
 
     /**

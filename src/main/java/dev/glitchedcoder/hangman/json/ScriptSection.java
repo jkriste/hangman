@@ -1,22 +1,41 @@
 package dev.glitchedcoder.hangman.json;
 
+import javax.annotation.Nullable;
+
 public enum ScriptSection {
 
-    INTRODUCTION_BEGIN("introduction_begin"),
-    INTRODUCTION_END("introduction_end"),
-    PHASE_ONE("phase_one"),
+    INTRODUCTION("introduction_sfl", "introduction_nsfl"),
+    INTRODUCTION_TUTORIAL("introduction_tutorial"),
+    INTRODUCTION_NO_TUTORIAL("introduction_no_tutorial"),
+    PHASE_ONE_TUTORIAL("phase_one_tutorial"),
+    PHASE_ONE_NO_TUTORIAL("phase_one_no_tutorial"),
     PHASE_TWO("phase_two"),
     PHASE_THREE("phase_three"),
-    GAME_LOST("game_lost"),
-    GAME_WON("game_won");
+    GAME_LOST("game_lost_sfl", "game_lost_nsfl"),
+    GAME_WON("game_won_sfl", "game_won_nsfl");
 
-    private final String id;
+    private final String sflId;
+    private final String nsflId;
 
-    ScriptSection(String id) {
-        this.id = id;
+    ScriptSection(String sflId) {
+        this(sflId, null);
     }
 
-    public String getId() {
-        return id;
+    ScriptSection(String sflId, String nsflId) {
+        this.sflId = sflId;
+        this.nsflId = nsflId;
+    }
+
+    public boolean hasNsflVersion() {
+        return nsflId != null;
+    }
+
+    public String getSflId() {
+        return sflId;
+    }
+
+    @Nullable
+    public String getNsflId() {
+        return nsflId;
     }
 }

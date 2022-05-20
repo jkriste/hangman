@@ -66,7 +66,7 @@ public abstract class Entity implements Renderable {
 
     @Override
     public boolean shouldDraw() {
-        return this.visible && !this.dead;
+        return this.visible && !this.dead && this.loaded;
     }
 
     @Override

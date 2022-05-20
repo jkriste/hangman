@@ -64,6 +64,7 @@ public enum Texture {
     SOLID_LEFT_ARROW("solid_left_arrow"),
     SOLID_RIGHT_ARROW("solid_right_arrow"),
     UNDERSCORE("underscore"),
+    COLON("colon"),
     SELF_PORTRAIT("self_portrait"),
     A_TO_Z_ICON("atoz"),
     BACKSPACE_ICON("bck"),

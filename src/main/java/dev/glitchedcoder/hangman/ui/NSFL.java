@@ -13,6 +13,10 @@ public enum NSFL {
         this.name = name;
     }
 
+    public boolean isOn() {
+        return this == ON;
+    }
+
     @Override
     public String toString() {
         return name;
