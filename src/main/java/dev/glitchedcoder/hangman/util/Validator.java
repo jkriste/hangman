@@ -47,6 +47,18 @@ public final class Validator {
     }
 
     /**
+     * Requires the two given objects are <b>NOT</b> {@link Object#equals(Object) equal}.
+     *
+     * @param obj1 The first object to compare.
+     * @param obj2 The second object to compare.
+     * @throws IllegalArgumentException Thrown if the given objects are equal.
+     */
+    @ParametersAreNonnullByDefault
+    public static void requireNotEqual(Object obj1, Object obj2) {
+        checkArgument(!obj1.equals(obj2), "Given objects '{}' are equal.", obj1.toString());
+    }
+
+    /**
      * Constrains the given {@code value}
      * between the given {@code min} and {@code max}.
      * <br />

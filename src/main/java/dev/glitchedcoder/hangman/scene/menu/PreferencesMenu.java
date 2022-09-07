@@ -1,7 +1,10 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.Hangman;
+import dev.glitchedcoder.hangman.json.Strings;
 import dev.glitchedcoder.hangman.scene.ApiKeyEntry;
+import dev.glitchedcoder.hangman.ui.Debug;
+import dev.glitchedcoder.hangman.ui.Mode;
 import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.window.Resolution;
 import lombok.EqualsAndHashCode;
@@ -16,30 +19,11 @@ public class PreferencesMenu extends Menu {
     private final MenuComponent[] components;
 
     private static final byte SCALAR = 3;
-    private static final byte COMPONENT_SIZE = 5;
+    private static final byte COMPONENT_SIZE = 7;
 
     public PreferencesMenu(@Nonnull MainMenu parent) {
         this.parent = parent;
         this.components = new MenuComponent[COMPONENT_SIZE];
-        ScrollableMenuComponent<Resolution> resolutions = new ScrollableMenuComponent<>(this, Resolution.values, SCALAR);
-        ScrollableMenuComponent<NSFL> nsfl = new ScrollableMenuComponent<>(this, NSFL.values, SCALAR);
-        MenuComponent changeKey = new MenuComponent(this, "Change API Key", SCALAR);
-        MenuComponent applyComponent = new MenuComponent(this, "APPLY & RESTART", SCALAR);
-        MenuComponent backComponent = new MenuComponent(this, "BACK", SCALAR);
-        changeKey.onSelect(() -> setScene(new ApiKeyEntry()));
-        applyComponent.onSelect(() -> {
-            NSFL notsafe = nsfl.getSelected();
-            config.setNsfl(notsafe);
-            Resolution resolution = resolutions.getSelected();
-            config.setResolution(resolution);
-            Hangman.restart();
-        });
-        backComponent.onSelect(() -> setScene(parent));
-        components[0] = resolutions;
-        components[1] = nsfl;
-        components[2] = changeKey;
-        components[3] = applyComponent;
-        components[4] = backComponent;
     }
 
     @Nullable
@@ -54,8 +38,37 @@ public class PreferencesMenu extends Menu {
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
+    protected void onInit() {
+        ScrollableMenuComponent<Resolution> resolutions = new ScrollableMenuComponent<>(this, Resolution.values, SCALAR);
+        ScrollableMenuComponent<NSFL> nsfl = new ScrollableMenuComponent<>(this, NSFL.values, SCALAR);
+        ScrollableMenuComponent<Mode> mode = new ScrollableMenuComponent<>(this, Mode.values, SCALAR);
+        ScrollableMenuComponent<Debug> debug = new ScrollableMenuComponent<>(this, Debug.values, SCALAR);
+        resolutions.setIndex(config.getResolution());
+        nsfl.setIndex(config.getNSFL());
+        mode.setIndex(config.getMode());
+        debug.setIndex(config.getDebug());
+        MenuComponent changeKey = new MenuComponent(this, Strings.CHANGE_KEY, SCALAR);
+        MenuComponent applyComponent = new MenuComponent(this, Strings.APPLY, SCALAR);
+        MenuComponent backComponent = new MenuComponent(this, Strings.MENU_BACK, SCALAR);
+        if (!config.getMode().isOnline())
+            changeKey.setFocusable(false);
+        changeKey.onSelect(() -> setScene(new ApiKeyEntry()));
+        applyComponent.onSelect(() -> {
+            config.setNsfl(nsfl.getSelected());
+            config.setResolution(resolutions.getSelected());
+            config.setMode(mode.getSelected());
+            config.setDebug(debug.getSelected());
+            Hangman.restart();
+        });
+        backComponent.onSelect(() -> setScene(parent));
+        components[0] = resolutions;
+        components[1] = nsfl;
+        components[2] = mode;
+        components[3] = debug;
+        components[4] = changeKey;
+        components[5] = applyComponent;
+        components[6] = backComponent;
+        super.onInit();
         autoCenter();
     }
 

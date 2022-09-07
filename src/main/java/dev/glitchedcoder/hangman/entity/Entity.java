@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Scene;
 
@@ -9,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 public abstract class Entity implements Renderable {
 
@@ -18,9 +20,9 @@ public abstract class Entity implements Renderable {
     private final AtomicReference<Location> loc;
     private final AtomicReference<RenderPriority> priority;
 
-    private volatile boolean dead;
     private volatile boolean loaded;
     private volatile boolean visible;
+    private volatile boolean removed;
     private volatile boolean shouldRemove;
 
     @ParametersAreNonnullByDefault
@@ -66,30 +68,33 @@ public abstract class Entity implements Renderable {
 
     @Override
     public boolean shouldDraw() {
-        return this.visible && !this.dead && this.loaded;
+        return this.visible && !this.removed && this.loaded;
     }
 
     @Override
     public boolean shouldRemove() {
-        return this.shouldRemove || this.dead;
+        if (!this.loaded)
+            return false;
+        return this.shouldRemove && !this.removed;
     }
 
     @Override
     public void dispose() {
         this.shouldRemove = true;
+        Hangman.debug("Entity '{}' marked for disposal.", this.type.name());
     }
 
     @Override
     public final void remove() {
-        Validator.checkArgument(!dead && loaded, "Tried to remove dead & unloaded entity.");
-        this.dead = true;
+        Validator.checkArgument(!removed && loaded, "Tried to remove already-removed & unloaded entity.");
+        this.removed = true;
         this.loaded = false;
         onUnload();
     }
 
     @Override
     public final void spawn() {
-        Validator.checkArgument(!dead, "Tried to spawn dead entity {}: {}", type, id);
+        Validator.checkArgument(!loaded && !removed, "Tried to spawn already-loaded or removed entity {}: {}", type, id);
         onLoad();
         this.loaded = true;
         this.visible = true;
@@ -102,7 +107,7 @@ public abstract class Entity implements Renderable {
      */
     @Nonnull
     @Override
-    public RenderPriority getRenderPriority() {
+    public final RenderPriority getRenderPriority() {
         return priority.get();
     }
 
@@ -121,16 +126,17 @@ public abstract class Entity implements Renderable {
     }
 
     /**
-     * Gets whether the {@link Entity} is dead.
+     * Gets whether the {@link Entity} is removed.
      * <br />
-     * Although this doesn't refer to an "alive"
-     * {@link Entity}, it does account for whether
-     * the {@link Entity} has been {@link #remove() removed}.
+     * If {@code true}, the {@link Entity} cannot be spawned or removed again.
+     * <br />
+     * Once {@link #remove() removed}, the {@link Scene} should
+     * also remove any instances it may still have of the {@link Entity}.
      *
-     * @return True if the {@link Entity} is dead, false otherwise.
+     * @return True if the {@link Entity} is removed, false otherwise.
      */
-    public final boolean isDead() {
-        return dead;
+    public final boolean isRemoved() {
+        return removed;
     }
 
     /**
@@ -205,6 +211,18 @@ public abstract class Entity implements Renderable {
      */
     public final void setLocation(@Nonnull Location location) {
         this.loc.set(location);
+    }
+
+    /**
+     * Sets the {@link Location} of the {@link Entity}.
+     * <br />
+     * Uses a {@link Function} that consumes a {@link Rectangle} and outputs
+     * a {@link Location} as a shortcut for static {@link Location} methods.
+     *
+     * @param function The function.
+     */
+    public final void setLocation(Function<Rectangle, Location> function) {
+        this.loc.set(function.apply(getBounds()));
     }
 
     /**

@@ -17,6 +17,18 @@ public class Sprite extends Entity {
     private final Rectangle bounds;
     private final BufferedImage[] textures;
 
+    public Sprite(Scene scene, BufferedImage[] images, byte speed, double scalar) {
+        super(scene, EntityType.SPRITE);
+        this.textures = new BufferedImage[images.length];
+        for (int i = 0; i < images.length; i++) {
+            this.textures[i] = new TexturePreprocessor(images[i])
+                    .scale(scalar)
+                    .build();
+        }
+        this.speed = speed;
+        this.bounds = new Rectangle(textures[0].getWidth(), textures[0].getHeight());
+    }
+
     public Sprite(Scene scene, AnimatedTexture texture, byte speed, double scalar) {
         super(scene, EntityType.SPRITE);
         BufferedImage[] array = texture.asImageArray();

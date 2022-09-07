@@ -28,6 +28,7 @@ public class FadeIn extends Entity {
         Validator.checkArgument(skip > 0, "Given skip is <= 0.");
         this.skip = skip;
         this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+        setRenderPriority(RenderPriority.MAX);
     }
 
     @Override
@@ -65,12 +66,6 @@ public class FadeIn extends Entity {
     public void draw(@Nonnull Graphics2D graphics) {
         graphics.setColor(this.color);
         graphics.fill(this.bounds);
-    }
-
-    @Nonnull
-    @Override
-    public RenderPriority getRenderPriority() {
-        return RenderPriority.MAX;
     }
 
     /**

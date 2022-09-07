@@ -19,7 +19,12 @@ public class LightFixture extends Entity {
     private final BufferedImage lightOn;
     private final BufferedImage lightOff;
 
+    private static final double DEFAULT_SCALE = 4.1;
     private static final Random RANDOM = new Random();
+
+    public LightFixture(Scene scene, byte flickerChance) {
+        this(scene, flickerChance, DEFAULT_SCALE);
+    }
 
     public LightFixture(Scene scene, byte flickerChance, double scale) {
         super(scene, EntityType.LIGHT_FIXTURE);

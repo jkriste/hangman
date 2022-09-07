@@ -1,10 +1,13 @@
 package dev.glitchedcoder.hangman.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.json.Word;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -25,6 +28,35 @@ public final class ApiRequest {
     private static final Config CONFIG = Config.getConfig();
 
     private ApiRequest() {
+    }
+
+    /**
+     * Checks for an {@link #OK_STATUS} from the API.
+     * <br />
+     * The timeout is configured for {@code 1000ms} in case the site is down.
+     *
+     * @return True if the API is available, false otherwise.
+     */
+    public static boolean checkApi() {
+        // set timeout to 1000ms or 1 second
+        RequestConfig config = RequestConfig.custom()
+                .setConnectionRequestTimeout(1000)
+                .setConnectTimeout(1000)
+                .setSocketTimeout(1000)
+                .build();
+        // build with the custom request config
+        try (CloseableHttpClient client = HttpClients.custom().setDefaultRequestConfig(config).build()) {
+            HttpGet get = new HttpGet(Constants.API_URL);
+            CloseableHttpResponse response = client.execute(get);
+            StatusLine status = response.getStatusLine();
+            response.close();
+            // check for OK_STATUS
+            return status.getStatusCode() == OK_STATUS;
+        } catch (IOException e) {
+            // return false if any I/O exception is thrown
+            // also accounts for timeout
+            return false;
+        }
     }
 
     /**
@@ -80,7 +112,7 @@ public final class ApiRequest {
      * @param length The length of the word to request.
      * @return A {@link Word} from the API, or rarely {@code null}.
      */
-    public static Word requestWord(int length) {
+    public static String requestWord(int length) {
         Gson gson = Constants.GSON;
         length = Validator.constrain(length, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH);
         try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -94,7 +126,8 @@ public final class ApiRequest {
             // get the content from the reponse & parse using GSON
             InputStream in = response.getEntity().getContent();
             InputStreamReader reader = new InputStreamReader(in);
-            Word word = gson.fromJson(reader, Word.class);
+            JsonElement element = JsonParser.parseReader(reader);
+            String word = element.getAsJsonObject().get("word").getAsString();
             // clean up & return the parsed response
             EntityUtils.consume(response.getEntity());
             response.close();

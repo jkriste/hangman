@@ -1,6 +1,8 @@
 package dev.glitchedcoder.hangman.ui;
 
 import dev.glitchedcoder.hangman.json.Config;
+import dev.glitchedcoder.hangman.json.Script;
+import dev.glitchedcoder.hangman.json.Strings;
 import dev.glitchedcoder.hangman.util.Validator;
 
 import javax.annotation.Nonnull;
@@ -35,6 +37,10 @@ public final class TexturePreprocessor {
     public TexturePreprocessor(@Nonnull Texture texture) {
         this.scalar = Config.getConfig().getResolution().getScalar();
         this.image = texture.asImage();
+    }
+
+    public TexturePreprocessor(@Nonnull Strings string) {
+        this(Script.getScript().getString(string));
     }
 
     public TexturePreprocessor(@Nonnull String text) {

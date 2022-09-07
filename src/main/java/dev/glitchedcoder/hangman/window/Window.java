@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -19,14 +21,14 @@ import java.awt.event.WindowEvent;
  * <br />
  * Handles the main game thread.
  */
-public final class Window extends JFrame implements Runnable {
+public final class Window extends JFrame implements Runnable, FocusListener {
 
     private volatile boolean running;
 
     private final View view;
 
     private static final short MS_IN_S = 1000;
-    private static final byte FRAMES_PER_SECOND = 10;
+    public static final byte FRAMES_PER_SECOND = 14;
 
     public Window(View view) {
         this.view = view;
@@ -37,7 +39,7 @@ public final class Window extends JFrame implements Runnable {
         setTitle(Constants.TITLE);
         setIconImage(Texture.EXECUTIONER.asImage());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        addFocusListener(view);
+        addFocusListener(this);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -85,11 +87,23 @@ public final class Window extends JFrame implements Runnable {
         view.close();
     }
 
+    @Override
+    public void focusGained(FocusEvent e) {
+        Hangman.debug("Focus gained event called for window.");
+        this.view.focusGained(e);
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        Hangman.debug("Focus lost event called for window.");
+        this.view.focusLost(e);
+    }
+
     /**
      * Kills the {@link Window}'s game thread.
      * <br />
      * When the game thread stops, the {@link View}
-     * will {@link Scene#onUnload() unload the scene}.
+     * will {@link Scene#onDispose() unload the scene}.
      */
     public void stop() {
         this.running = false;
@@ -105,6 +119,7 @@ public final class Window extends JFrame implements Runnable {
      * @param resolution The new resolution.
      */
     private void adjustResolution(@Nonnull Resolution resolution) {
+        Hangman.debug("Window dimensions adjusted to {}", resolution.toString());
         Dimension d = new Dimension(resolution.getWidth(), resolution.getHeight());
         setSize(d);
         setPreferredSize(d);

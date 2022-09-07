@@ -1,13 +1,18 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
-import dev.glitchedcoder.hangman.scene.mode.FreeMode;
-import dev.glitchedcoder.hangman.scene.mode.StoryIntro;
+import dev.glitchedcoder.hangman.entity.FadeOut;
+import dev.glitchedcoder.hangman.json.Strings;
+import dev.glitchedcoder.hangman.scene.mode.SIntro;
+import dev.glitchedcoder.hangman.window.key.Key;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
+import java.awt.Color;
 
 @EqualsAndHashCode(callSuper = true)
 public class SingleplayerMenu extends Menu {
+
+    private FadeOut fadeOut;
 
     private final MainMenu parent;
     private final MenuComponent[] components;
@@ -18,15 +23,6 @@ public class SingleplayerMenu extends Menu {
     public SingleplayerMenu(MainMenu parent) {
         this.parent = parent;
         this.components = new MenuComponent[COMPONENT_SIZE];
-        MenuComponent storyMode = new MenuComponent(this, "Story Mode", SCALAR);
-        MenuComponent freeMode = new MenuComponent(this, "Free Mode", SCALAR);
-        MenuComponent back = new MenuComponent(this, "Back", SCALAR);
-        storyMode.onSelect(() -> setScene(new StoryIntro()));
-        freeMode.onSelect(() -> setScene(new FreeMode(null)));
-        back.onSelect(() -> setScene(parent));
-        components[0] = storyMode;
-        components[1] = freeMode;
-        components[2] = back;
     }
 
     @Nullable
@@ -46,8 +42,38 @@ public class SingleplayerMenu extends Menu {
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
+    protected void onInit() {
+        MenuComponent storyMode = new MenuComponent(this, Strings.STORY, SCALAR);
+        MenuComponent freeMode = new MenuComponent(this, Strings.FREE, SCALAR);
+        MenuComponent back = new MenuComponent(this, Strings.MENU_BACK, SCALAR);
+        this.fadeOut = new FadeOut(this, Color.BLACK, (byte) 8);
+        addRenderable(fadeOut);
+        storyMode.onSelect(() -> {
+            fadeOut.onFinish(() -> setScene(new SIntro()));
+            fadeOut.spawn();
+        });
+        freeMode.onSelect(() -> {
+//            fadeOut.onFinish(() -> setScene(new FreeMode(null)));
+            fadeOut.spawn();
+        });
+        back.onSelect(() -> setScene(parent, true));
+        components[0] = storyMode;
+        components[1] = freeMode;
+        components[2] = back;
+        super.onInit();
         autoCenter();
+    }
+
+    @Override
+    protected void onDispose() {
+        super.onDispose();
+        fadeOut.dispose();
+    }
+
+    @Override
+    protected void onKeyPress(Key key) {
+        if (fadeOut.shouldDraw())
+            return;
+        super.onKeyPress(key);
     }
 }

@@ -4,8 +4,8 @@ import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.entity.TextInput;
+import dev.glitchedcoder.hangman.json.Strings;
 import dev.glitchedcoder.hangman.scene.menu.MainMenu;
-import dev.glitchedcoder.hangman.ui.Icon;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.util.ApiRequest;
 import dev.glitchedcoder.hangman.window.Scene;
@@ -32,39 +32,36 @@ public class ApiKeyEntry extends Scene {
                 .with(Key.ENTER)
                 .with(Key.BACKSPACE)
                 .build();
-        BufferedImage headerText = new TexturePreprocessor("Please input your API key")
+        BufferedImage headerText = new TexturePreprocessor(Strings.KEY_PROMPT)
                 .color(Color.LIGHT_GRAY)
                 .scale(3D)
                 .removeBackground()
                 .build();
-        BufferedImage footerText = new TexturePreprocessor("Failed to auth your API key")
+        BufferedImage footerText = new TexturePreprocessor(Strings.KEY_FAIL)
                 .color(Color.RED)
                 .removeBackground()
                 .scale(2D)
                 .build();
         this.header = new FixedTexture(this, headerText);
         this.footer = new FixedTexture(this, footerText);
-        this.textInput = new TextInput(this, 5, 5, true);
-        this.iconOverlay = new IconOverlay(this, Color.WHITE, 2.5);
+        this.textInput = new TextInput(this, 5, true);
+        this.iconOverlay = new IconOverlay(this, Color.WHITE);
     }
 
     @Override
-    protected void onLoad() {
-        iconOverlay.setIcon(Icon.A_TO_Z, 2, 0);
-        iconOverlay.setIcon(Icon.ZERO_TO_NINE, 2, 1);
-        iconOverlay.setIcon(Icon.ENTER, 1, 0);
-        iconOverlay.setIcon(Icon.BACKSPACE, 1, 1);
-        this.header.setLocation(Location.topCenter(header.getBounds()));
-        this.textInput.setLocation(Location.center(textInput.getBounds()));
-        this.footer.setLocation(Location.bottomCenter(footer.getBounds()));
-        this.iconOverlay.setLocation(Location.bottomLeft(iconOverlay.getBounds()));
+    protected void onInit() {
+        iconOverlay.setIcons(IconLayout.API_KEY_ENTRY);
+        this.header.setLocation(Location::topCenter);
+        this.textInput.setLocation(Location::center);
+        this.footer.setLocation(Location::bottomCenter);
+        this.iconOverlay.setLocation(Location::bottomRight);
         addRenderables(header, footer, textInput, iconOverlay);
         spawnAll(header, footer, textInput, iconOverlay);
         footer.setVisible(false);
     }
 
     @Override
-    protected void onUnload() {
+    protected void onDispose() {
         disposeAll(header, footer, textInput);
     }
 

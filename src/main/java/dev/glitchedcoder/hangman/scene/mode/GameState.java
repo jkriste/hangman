@@ -1,26 +1,26 @@
 package dev.glitchedcoder.hangman.scene.mode;
 
-import dev.glitchedcoder.hangman.ui.Icon;
-
-import static dev.glitchedcoder.hangman.ui.Icon.*;
+import dev.glitchedcoder.hangman.scene.IconLayout;
 
 public enum GameState {
 
-    PICKING_OPTION(new Icon[][] { {}, { ENTER, ESCAPE }, { LEFT_ARROW, RIGHT_ARROW } }),
-    GUESSING_LETTER(new Icon[][] { {}, {}, { A_TO_Z, ESCAPE } }),
-    GUESSING_WORD(new Icon[][] { {}, { null, ESCAPE }, { A_TO_Z, ENTER, BACKSPACE } }),
-    PICKING_FROM_INVENTORY(new Icon[][] { {}, { ENTER, ESCAPE }, { LEFT_ARROW, RIGHT_ARROW } }),
-    READING_TEXT(new Icon[][] { {}, {}, { ENTER, ESCAPE } }),
-    GAME_OVER(new Icon[][] { {}, {}, { ENTER, ESCAPE } }),
-    GAME_WON(new Icon[][] { {}, {}, { ENTER, ESCAPE } });
+    READING_TEXT(IconLayout.READING_TEXT),
+    PICKING_OPTION(IconLayout.PICKING_OPTION),
+    GAME_OVER(IconLayout.GAME_FINISH),
+    GAME_WON(IconLayout.GAME_FINISH),
+    @Deprecated(since = "1.2.0")
+    PICKING_FROM_INVENTORY(IconLayout.PICKING_FROM_INVENTORY),
+    GUESSING_LETTER(IconLayout.GUESSING_LETTER),
+    GUESSING_WORD(IconLayout.GUESSING_WORD),
+    TRANSITION(IconLayout.TRANSITION);
 
-    private final Icon[][] overlay;
+    private final IconLayout layout;
 
-    GameState(Icon[][] overlay) {
-        this.overlay = overlay;
+    GameState(IconLayout layout) {
+        this.layout = layout;
     }
 
-    public Icon[][] getOverlay() {
-        return overlay;
+    public IconLayout getLayout() {
+        return layout;
     }
 }

@@ -2,7 +2,7 @@ package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.entity.IconOverlay;
 import dev.glitchedcoder.hangman.entity.Location;
-import dev.glitchedcoder.hangman.ui.Icon;
+import dev.glitchedcoder.hangman.scene.IconLayout;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Scene;
 import dev.glitchedcoder.hangman.window.key.Key;
@@ -23,6 +23,7 @@ public abstract class Menu extends Scene {
     protected final IconOverlay overlay;
 
     protected Menu() {
+        this.index = -1;
         this.keys = KeySelector.create()
                 .with(Key.ARROW_UP)
                 .with(Key.ARROW_DOWN)
@@ -53,10 +54,35 @@ public abstract class Menu extends Scene {
      * should have at least one {@link MenuComponent} that's
      * {@link MenuComponent#isFocusable() focusable} and should
      * not be empty.
+     * <br />
+     * The {@link MenuComponent}s should be ordered in the array
+     * in the order of appearance, i.e., {@code getComponents[0]}
+     * will be the first to appear, {@code getComponents[1]} will
+     * be the second to appear, and so on.
      *
      * @return The list of components that belong to the menu.
      */
     protected abstract MenuComponent[] getComponents();
+
+    /**
+     * Gets the default {@link IconLayout} for the {@link Menu}.
+     * <br />
+     * If {@code null}, the {@link Menu} class will pick either:
+     * <ul>
+     *     <li>{@link IconLayout#MENU}</li>
+     *     <li>{@link IconLayout#MENU_WITH_PARENT}</li>
+     *     <li>{@link IconLayout#MENU_WITH_SCROLLABLE_COMPONENTS}</li>
+     * </ul>
+     * ...depending on the {@link Menu} configuration.
+     * <br />
+     * By default, this method returns {@code null}.
+     *
+     * @return The default {@link IconLayout} or {@code null} for no preference.
+     */
+    @Nullable
+    protected IconLayout getLayout() {
+        return null;
+    }
 
     /**
      * Gets the spacing for {@link MenuComponent}s.
@@ -65,6 +91,8 @@ public abstract class Menu extends Scene {
      * {@link MenuComponent}s.
      * <br />
      * Only used when calling {@link #autoCenter()}.
+     * <br />
+     * By default, this method returns {@code 0}.
      *
      * @return The spacing for {@link MenuComponent}s.
      */
@@ -78,6 +106,8 @@ public abstract class Menu extends Scene {
      * Used to shift all {@link MenuComponent} upward or downward.
      * <br />
      * Only used when calling {@link #autoCenter()}.
+     * <br />
+     * By default, this method returns {@code 0}.
      *
      * @return The Y-offset for {@link MenuComponent}s.
      */
@@ -91,50 +121,41 @@ public abstract class Menu extends Scene {
     }
 
     @Override
-    protected void onLoad() {
+    protected void onInit() {
         addRenderable(overlay);
         MenuComponent[] components = getComponents();
         boolean scrollableComponents = false;
-        index = -1;
         for (byte b = 0; b < components.length; b++) {
             MenuComponent component = components[b];
-            if (index != -1)
+            if (this.index != -1)
                 component.setFocused(false);
             if (component.isFocusable() && index == -1) {
                 component.setFocused(true);
-                index = b;
+                this.index = b;
             }
             if (component instanceof ScrollableMenuComponent)
                 scrollableComponents = true;
-            addRenderable(component);
-            component.spawn();
         }
-        Validator.checkArgument(index != -1, "Empty or non-focusable components in menu.");
+        Validator.checkArgument(this.index != -1, "Empty or non-focusable components in menu.");
+        addRenderables(components);
+        spawnAll(components);
+        // set a default icon overlay (based on the type of menu) if getLayout() is null
         if (scrollableComponents) {
             keys.add(Key.ARROW_RIGHT);
             keys.add(Key.ARROW_LEFT);
-            overlay.setIcon(Icon.LEFT_ARROW, 2, 0);
-            overlay.setIcon(Icon.DOWN_ARROW, 2, 1);
-            overlay.setIcon(Icon.RIGHT_ARROW, 2, 2);
-            overlay.setIcon(Icon.UP_ARROW, 1, 1);
-            overlay.setIcon(Icon.ESCAPE, 1, 0);
-            overlay.setIcon(Icon.ENTER, 1, 2);
-        } else {
-            overlay.setIcon(Icon.UP_ARROW, 2, 0);
-            overlay.setIcon(Icon.DOWN_ARROW, 2, 1);
-            if (getParent() != null) {
-                overlay.setIcon(Icon.ESCAPE, 1, 0);
-                overlay.setIcon(Icon.ENTER, 1, 1);
-            } else
-                overlay.setIcon(Icon.ENTER, 2, 2);
-        }
-        overlay.setLocation(Location.bottomLeft(overlay.getBounds()));
+            overlay.setIcons(IconLayout.MENU_WITH_SCROLLABLE_COMPONENTS);
+        } else
+            overlay.setIcons(getParent() != null ? IconLayout.MENU_WITH_PARENT : IconLayout.MENU);
+        if (getLayout() != null)
+            overlay.setIcons(getLayout());
+        overlay.setLocation(Location::bottomLeft);
         overlay.spawn();
     }
 
     @Override
-    protected final void onUnload() {
-        // do nothing
+    protected void onDispose() {
+        disposeAll(getComponents());
+        overlay.dispose();
     }
 
     @Override
@@ -156,18 +177,14 @@ public abstract class Menu extends Scene {
             }
             case ARROW_LEFT: {
                 MenuComponent focused = currentlyFocused();
-                if (focused instanceof ScrollableMenuComponent) {
-                    ScrollableMenuComponent<?> component = (ScrollableMenuComponent<?>) focused;
-                    component.scrollLeft();
-                }
+                if (focused instanceof ScrollableMenuComponent)
+                    ((ScrollableMenuComponent<?>) focused).scrollLeft();
                 break;
             }
             case ARROW_RIGHT: {
                 MenuComponent focused = currentlyFocused();
-                if (focused instanceof ScrollableMenuComponent) {
-                    ScrollableMenuComponent<?> component = (ScrollableMenuComponent<?>) focused;
-                    component.scrollRight();
-                }
+                if (focused instanceof ScrollableMenuComponent)
+                    ((ScrollableMenuComponent<?>) focused).scrollRight();
                 break;
             }
             case ENTER: {
@@ -178,7 +195,7 @@ public abstract class Menu extends Scene {
             case ESCAPE: {
                 Menu parent = getParent();
                 if (parent != null)
-                    setScene(parent);
+                    setScene(parent, true);
                 break;
             }
             default:
@@ -186,6 +203,16 @@ public abstract class Menu extends Scene {
         }
     }
 
+    /**
+     * Gets the {@link MenuComponent}s of the {@link Menu}
+     * and {@link Location#center(Rectangle) centers} them
+     * based on the following {@link Menu} preferences:
+     * <ul>
+     *    <li>{@link #getComponentSpacing()}</li>
+     *    <li>{@link #getComponentYOffset()}</li>
+     * </ul>
+     * This method should be called <b>AFTER</b> {@code super.onInit()}.
+     */
     protected final void autoCenter() {
         MenuComponent[] components = getComponents();
         byte yOffset = getComponentSpacing();
@@ -199,6 +226,15 @@ public abstract class Menu extends Scene {
         }
     }
 
+    /**
+     * Gets the next {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     * <br />
+     * Theoretically, this method should return a non-{@code null}
+     * value since {@link #onInit()} checks for at least <i>one</i>
+     * {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     *
+     * @return The next {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     */
     @Nullable
     private MenuComponent nextFocusable() {
         MenuComponent[] components = getComponents();
@@ -217,6 +253,15 @@ public abstract class Menu extends Scene {
         return null;
     }
 
+    /**
+     * Gets the last {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     * <br />
+     * Theoretically, this method should return a non-{@code null}
+     * value since {@link #onInit()} checks for at least <i>one</i>
+     * {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     *
+     * @return The last {@link MenuComponent#isFocusable() focusable} {@link MenuComponent}.
+     */
     @Nullable
     private MenuComponent lastFocusable() {
         MenuComponent[] components = getComponents();
@@ -235,6 +280,11 @@ public abstract class Menu extends Scene {
         return null;
     }
 
+    /**
+     * Gets the currently {@link MenuComponent#isFocused() focused} {@link MenuComponent}.
+     *
+     * @return The currently {@link MenuComponent#isFocused() focused} {@link MenuComponent}.
+     */
     private MenuComponent currentlyFocused() {
         return getComponents()[index];
     }

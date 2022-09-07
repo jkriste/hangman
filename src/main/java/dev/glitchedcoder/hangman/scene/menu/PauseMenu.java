@@ -1,6 +1,7 @@
 package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.Hangman;
+import dev.glitchedcoder.hangman.json.Strings;
 import dev.glitchedcoder.hangman.window.Scene;
 import lombok.EqualsAndHashCode;
 
@@ -19,15 +20,6 @@ public class PauseMenu extends Menu {
     public PauseMenu(@Nonnull Scene scene) {
         this.scene = scene;
         this.components = new MenuComponent[COMPONENT_SIZE];
-        MenuComponent resume = new MenuComponent(this, "Resume", SCALAR);
-        MenuComponent mainMenu = new MenuComponent(this, "Main Menu", SCALAR);
-        MenuComponent exit = new MenuComponent(this, "Exit", SCALAR);
-        resume.onSelect(() -> setScene(scene));
-        mainMenu.onSelect(() -> setScene(new MainMenu()));
-        exit.onSelect(Hangman::exit);
-        components[0] = resume;
-        components[1] = mainMenu;
-        components[2] = exit;
     }
 
     @Nullable
@@ -42,8 +34,17 @@ public class PauseMenu extends Menu {
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
+    protected void onInit() {
+        MenuComponent resume = new MenuComponent(this, Strings.RESUME, SCALAR);
+        MenuComponent mainMenu = new MenuComponent(this, Strings.MAIN_MENU, SCALAR);
+        MenuComponent exit = new MenuComponent(this, Strings.MENU_EXIT, SCALAR);
+        resume.onSelect(() -> setScene(scene));
+        mainMenu.onSelect(() -> setScene(new MainMenu()));
+        exit.onSelect(Hangman::exit);
+        components[0] = resume;
+        components[1] = mainMenu;
+        components[2] = exit;
+        super.onInit();
         autoCenter();
     }
 

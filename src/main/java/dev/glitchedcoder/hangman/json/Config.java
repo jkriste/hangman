@@ -2,6 +2,8 @@ package dev.glitchedcoder.hangman.json;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import dev.glitchedcoder.hangman.ui.Debug;
+import dev.glitchedcoder.hangman.ui.Mode;
 import dev.glitchedcoder.hangman.ui.NSFL;
 import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.util.Validator;
@@ -23,6 +25,8 @@ import java.util.Locale;
 public final class Config {
 
     private NSFL nsfl;
+    private Mode mode;
+    private Debug debug;
     private String apiKey;
     private boolean playedBefore;
     private Resolution resolution;
@@ -38,6 +42,8 @@ public final class Config {
             return;
         this.apiKey = "";
         this.nsfl = NSFL.OFF;
+        this.mode = Mode.ONLINE;
+        this.debug = Debug.DEBUG_OFF;
         this.playedBefore = false;
         this.resolution = Resolution.P576;
     }
@@ -130,8 +136,18 @@ public final class Config {
      *
      * @return ON to show more graphic scenes, OFF otherwise.
      */
+    @Nonnull
     public NSFL getNSFL() {
-        return nsfl;
+        return nsfl == null ? NSFL.OFF : nsfl;
+    }
+
+    public Mode getMode() {
+        return mode == null ? Mode.ONLINE : mode;
+    }
+
+    @Nonnull
+    public Debug getDebug() {
+        return debug == null ? Debug.DEBUG_OFF : debug;
     }
 
     /**
@@ -178,7 +194,7 @@ public final class Config {
      */
     @Nonnull
     public Resolution getResolution() {
-        return resolution;
+        return resolution == null ? Resolution.P576 : resolution;
     }
 
     /**
@@ -189,8 +205,19 @@ public final class Config {
      *
      * @param nsfl Whether more graphic scenes should be enabled.
      */
-    public void setNsfl(NSFL nsfl) {
+    public void setNsfl(@Nonnull NSFL nsfl) {
+        Validator.requireNotNull(nsfl, "Given NSFL is null!");
         this.nsfl = nsfl;
+    }
+
+    public void setMode(@Nonnull Mode mode) {
+        Validator.requireNotNull(mode, "Given mode is null!");
+        this.mode = mode;
+    }
+
+    public void setDebug(@Nonnull Debug debug) {
+        Validator.requireNotNull(debug, "Given Debug is null!");
+        this.debug = debug;
     }
 
     /**

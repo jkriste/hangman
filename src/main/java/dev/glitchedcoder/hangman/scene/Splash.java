@@ -1,10 +1,12 @@
 package dev.glitchedcoder.hangman.scene;
 
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.entity.FadeIn;
 import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.scene.menu.MainMenu;
+import dev.glitchedcoder.hangman.ui.Mode;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.util.ApiRequest;
@@ -26,33 +28,39 @@ public class Splash extends Scene {
     private final FixedTexture text;
     private final FixedTexture portrait;
 
-    private static final byte SKIP = 11;
+    private static final byte SKIP = 8;
+    private static final byte FADE_OUT_DELAY = 2;
 
     public Splash() {
-        this.fadeIn = new FadeIn(this, Color.WHITE, SKIP);
+        this.fadeIn = new FadeIn(this, Color.BLACK, SKIP);
         this.fadeOut = new FadeOut(this, Color.BLACK, SKIP);
-        BufferedImage text = new TexturePreprocessor("Made by Justin")
-                .color(Color.DARK_GRAY)
-                .removeBackground()
-                .scale(4)
+        BufferedImage website = new TexturePreprocessor(Texture.JKRISTE_DEV)
+                .scale(0.75D)
                 .build();
-        this.text = new FixedTexture(this, text);
-        this.portrait = new FixedTexture(this, Texture.SELF_PORTRAIT);
-        this.text.setLocation(Location.bottomCenter(this.text.getBounds()));
-        this.portrait.setLocation(Location.center(this.portrait.getBounds()));
+        this.text = new FixedTexture(this, website);
+        BufferedImage portrait = new TexturePreprocessor(Texture.SELF_PORTRAIT)
+                .scale(0.65D)
+                .build();
+        this.portrait = new FixedTexture(this, portrait);
+        this.text.setLocation(Location::topCenter);
+        this.portrait.setLocation(Location::bottomCenter);
     }
 
     @Override
-    protected void onLoad() {
-        setBackground(Color.WHITE);
+    protected void onInit() {
+        setBackground(Color.BLACK);
         addRenderables(fadeIn, fadeOut, text, portrait);
         spawnAll(fadeIn, text, portrait);
         fadeIn.onFinish(() -> {
             fadeIn.dispose();
-            executor.schedule(fadeOut::spawn, 1, TimeUnit.SECONDS);
+            executor.schedule(fadeOut::spawn, FADE_OUT_DELAY, TimeUnit.SECONDS);
         });
+        if (config.getMode().isOnline() && !ApiRequest.checkApi()) {
+            Hangman.debug("Failed to contact the API, going offline...");
+            config.setMode(Mode.OFFLINE);
+        }
         fadeOut.onFinish(() -> {
-            if (ApiRequest.checkApiKey())
+            if (config.getMode() == Mode.OFFLINE || ApiRequest.checkApiKey())
                 setScene(new MainMenu());
             else
                 setScene(new ApiKeyEntry());
@@ -60,7 +68,7 @@ public class Splash extends Scene {
     }
 
     @Override
-    protected void onUnload() {
+    protected void onDispose() {
         disposeAll(fadeOut, fadeIn, text, portrait);
     }
 

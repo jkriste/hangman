@@ -1,5 +1,7 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.window.Window;
+
 import javax.annotation.Nonnull;
 import java.awt.Graphics2D;
 import java.util.UUID;
@@ -21,7 +23,7 @@ public interface Renderable extends Comparable<Renderable> {
      * before subsequently calling {@link #draw(Graphics2D)}.
      *
      * @param count The current frame being rendered, usually
-     *              {@code 0 <= count <= 30}.
+     *              {@code 0 <= count <} {@link Window#FRAMES_PER_SECOND}.
      */
     void tick(byte count);
 

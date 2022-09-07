@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.scene.IconLayout;
 import dev.glitchedcoder.hangman.ui.Icon;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
@@ -33,6 +34,11 @@ public class IconOverlay extends Entity {
     private final BufferedImage[] images;
 
     private static final byte MATRIX_SIZE = 3;
+    private static final double DEFAULT_SCALE = 2.5;
+
+    public IconOverlay(Scene scene, Color color) {
+        this(scene, color, DEFAULT_SCALE);
+    }
 
     public IconOverlay(Scene scene, Color color, double scale) {
         super(scene, EntityType.ICON_OVERLAY);
@@ -45,11 +51,12 @@ public class IconOverlay extends Entity {
                 .scale(scale)
                 .build();
         this.bounds = new Rectangle(iconSize.getWidth() * MATRIX_SIZE, iconSize.getHeight() * MATRIX_SIZE);
+        setRenderPriority(RenderPriority.MIN);
     }
 
     @Override
     protected void onLoad() {
-        Validator.checkArgument(hasIcons(), "Empty IconOverlay!");
+        // do nothing
     }
 
     @Override
@@ -79,12 +86,6 @@ public class IconOverlay extends Entity {
             graphics.drawImage(this.images[i], getLocation().getX(), getLocation().getY() + (i * height), null);
     }
 
-    @Nonnull
-    @Override
-    public RenderPriority getRenderPriority() {
-        return RenderPriority.MIN;
-    }
-
     /**
      * Checks if any {@link Icon}s exist in the {@link IconOverlay}.
      *
@@ -104,7 +105,7 @@ public class IconOverlay extends Entity {
      * Sets the given {@link Icon} at the given x and y indices.
      * <br />
      * The given {@code x} and {@code y} are constrained between
-     * {@code ( O,} {@link #MATRIX_SIZE} {@code )}, inclusive.
+     * {@code (O,} {@link #MATRIX_SIZE}{@code ]}.
      *
      * @param icon The icon to set.
      * @param x The row index.
@@ -118,6 +119,17 @@ public class IconOverlay extends Entity {
     }
 
     /**
+     * Sets the {@link IconOverlay} to the given {@link IconLayout}.
+     * <br />
+     * Should be a max size of {@link #MATRIX_SIZE}.
+     *
+     * @param layout The layout to set.
+     */
+    public void setIcons(@Nonnull IconLayout layout) {
+        this.setIcons(layout.getIconMatrix());
+    }
+
+    /**
      * Sets the {@link IconOverlay} {@link Icon} matrix with the given.
      * <br />
      * Should be a max size of {@link #MATRIX_SIZE}.
@@ -125,6 +137,10 @@ public class IconOverlay extends Entity {
      * @param iconMatrix The matrix to set.
      */
     public void setIcons(@Nonnull Icon[][] iconMatrix) {
+        if (iconMatrix.length == 0) {
+            clear();
+            return;
+        }
         for (byte i = 0; i < iconMatrix.length; i++) {
             for (byte j = 0; j < iconMatrix[i].length; j++) {
                 this.iconMatrix[i][j] = iconMatrix[i][j];
@@ -142,6 +158,7 @@ public class IconOverlay extends Entity {
                 this.iconMatrix[i][j] = null;
             }
         }
+        update();
     }
 
     /**

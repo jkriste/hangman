@@ -4,15 +4,16 @@ import javax.annotation.Nullable;
 
 public enum ScriptSection {
 
-    INTRODUCTION("introduction_sfl", "introduction_nsfl"),
-    INTRODUCTION_TUTORIAL("introduction_tutorial"),
-    INTRODUCTION_NO_TUTORIAL("introduction_no_tutorial"),
-    PHASE_ONE_TUTORIAL("phase_one_tutorial"),
-    PHASE_ONE_NO_TUTORIAL("phase_one_no_tutorial"),
-    PHASE_TWO("phase_two"),
-    PHASE_THREE("phase_three"),
-    GAME_LOST("game_lost_sfl", "game_lost_nsfl"),
-    GAME_WON("game_won_sfl", "game_won_nsfl");
+    INTRODUCTION("story.intro.sfl", "story.intro.nsfl"),
+    INTRODUCTION_TUTORIAL("story.intro.tutorial"),
+    INTRODUCTION_NO_TUTORIAL("story.intro.skiptutorial"),
+    PHASE_ONE_TUTORIAL("story.p1.tutorial"),
+    PHASE_ONE_NO_TUTORIAL("story.p1.skiptutorial"),
+    PHASE_TWO("story.p2"),
+    PHASE_THREE("story.p3"),
+    GAME_LOST("story.lose.sfl", "story.lose.nsfl"),
+    GAME_WON("story.win.sfl", "story.win.nsfl"),
+    ALREADY_GUESSED("story.generic.alreadyGuessed");
 
     private final String sflId;
     private final String nsflId;

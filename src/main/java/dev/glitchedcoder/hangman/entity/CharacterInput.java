@@ -21,7 +21,7 @@ public class CharacterInput extends Entity {
     private final boolean space;
     private final Rectangle bounds;
 
-    private static final char EMPTY_CHAR;
+    public static final char EMPTY_CHAR;
     private static final byte SPACE_BETWEEN;
     private static final Color LOCKED_COLOR;
     private static final Color UNLOCKED_COLOR;

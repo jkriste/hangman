@@ -1,5 +1,8 @@
 package dev.glitchedcoder.hangman.window.key;
 
+import dev.glitchedcoder.hangman.util.Validator;
+
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,6 +40,18 @@ public final class KeySelector {
      */
     public static Set<Key> none() {
         return Collections.emptySet();
+    }
+
+    /**
+     * Returns a singleton {@link Set<Key>} with the given key.
+     *
+     * @param key The key to put in the set.
+     * @return A singleton {@link Set<Key>} with the given key.
+     * @throws IllegalArgumentException Thrown if key is null.
+     */
+    public static Set<Key> singleton(@Nonnull Key key) {
+        Validator.requireNotNull(key, "Given key is null!");
+        return Collections.singleton(key);
     }
 
     /**

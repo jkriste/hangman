@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.window;
 
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.entity.Renderable;
 import dev.glitchedcoder.hangman.util.Validator;
 
@@ -10,12 +11,12 @@ import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class View extends Canvas implements FocusListener {
+public final class View extends Canvas {
 
+    private volatile boolean focused;
     private final AtomicReference<Scene> scene;
 
     private static final RenderingHints RENDERING_HINTS;
@@ -29,7 +30,7 @@ public final class View extends Canvas implements FocusListener {
 
     public View() {
         this.scene = new AtomicReference<>(null);
-        setFocusable(true);
+        setFocusable(false);
     }
 
     /**
@@ -59,7 +60,7 @@ public final class View extends Canvas implements FocusListener {
     public void draw() {
         BufferStrategy strategy = getBufferStrategy();
         if (strategy == null) {
-            createBufferStrategy(2);
+            createBufferStrategy(3);
             return;
         }
         Scene scene = getScene();
@@ -92,39 +93,37 @@ public final class View extends Canvas implements FocusListener {
      * If the given {@link Scene} is not {@code null} and isn't
      * the same as the {@link #getScene() current scene}, the given
      * {@link Scene} will be added as a {@link java.awt.KeyEventDispatcher}
-     * and will be {@link Scene#onLoad() loaded}.
+     * and will be {@link Scene#onInit() initialized} and {@link Scene#onLoad() loaded}.
+     * <br />
+     * If the given {@code disposeLast} is {@code true}, the current
+     * {@link Scene} will be {@link Scene#onDispose() disposed} and
+     * cannot be used again.
      *
      * @param scene The new scene to set for the view.
+     * @param disposeLast True to dispose the last scene, false otherwise.
      */
-    public synchronized void setScene(@Nonnull Scene scene) {
+    public synchronized void setScene(@Nonnull Scene scene, boolean disposeLast) {
         Validator.requireNotNull(scene, "Given scene is null!");
+        Validator.checkArgument(!scene.isDisposed(), "Given disposed scene '{}'!", scene.getId());
         Scene current = getScene();
         if (current != null) {
-            Validator.checkArgument(!current.equals(scene), "Given scene is same as current scene.");
+            Validator.requireNotEqual(current, scene);
             KEYBOARD_MANAGER.removeKeyEventDispatcher(current);
+            Hangman.debug("Unloading scene '{}' (ID: {}).", current.getClass().getSimpleName(), current.getId());
             current.onUnload();
+            if (disposeLast) {
+                current.markDisposed();
+                current.onDispose();
+            }
         }
         this.scene.set(scene);
         KEYBOARD_MANAGER.addKeyEventDispatcher(scene);
+        if (!scene.hasInitialized()) {
+            scene.onInit();
+            scene.markInitialized();
+        }
+        Hangman.debug("Loading scene '{}' (ID: {}).", scene.getClass().getSimpleName(), scene.getId());
         scene.onLoad();
-    }
-
-    /**
-     * Called by the {@link Window} when
-     * the {@link Window} has lost focus.
-     * <br />
-     * Passed on to the {@link Scene}.
-     *
-     * @param event The focus event.
-     */
-    @Override
-    public void focusLost(FocusEvent event) {
-        requestFocus();
-        requestFocusInWindow();
-        Scene scene = getScene();
-        if (scene == null)
-            return;
-        scene.focusLost(event);
     }
 
     /**
@@ -135,14 +134,40 @@ public final class View extends Canvas implements FocusListener {
      *
      * @param event The focus event.
      */
-    @Override
     public void focusGained(FocusEvent event) {
-        requestFocus();
-        requestFocusInWindow();
+        this.focused = true;
         Scene scene = getScene();
         if (scene == null)
             return;
         scene.focusGained(event);
+    }
+
+    /**
+     * Called by the {@link Window} when
+     * the {@link Window} has lost focus.
+     * <br />
+     * Passed on to the {@link Scene}.
+     *
+     * @param event The focus event.
+     */
+    public void focusLost(FocusEvent event) {
+        this.focused = false;
+        Scene scene = getScene();
+        if (scene == null)
+            return;
+        scene.focusLost(event);
+    }
+
+    /**
+     * Checks whether the {@link Window} or {@link View} is focused.
+     * <br />
+     * This method acts for both the {@link Window} and the {@link View}
+     * as both of them are essentially the same component.
+     *
+     * @return True if the {@link Window} or {@link View} is focused, false otherwise.
+     */
+    public boolean isFocused() {
+        return this.focused;
     }
 
     /**
@@ -156,9 +181,10 @@ public final class View extends Canvas implements FocusListener {
      * as {@code null} as a means of disposing it.
      */
     void close() {
+        Hangman.debug("View#close() called.");
         Scene scene = getScene();
         if (scene != null)
-            scene.onUnload();
+            scene.onDispose();
         this.scene.set(null);
     }
 

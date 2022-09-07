@@ -66,6 +66,7 @@ public enum Texture {
     UNDERSCORE("underscore"),
     COLON("colon"),
     SELF_PORTRAIT("self_portrait"),
+    JKRISTE_DEV("jkriste_dev"),
     A_TO_Z_ICON("atoz"),
     BACKSPACE_ICON("bck"),
     ZERO_TO_NINE_ICON("0to9"),

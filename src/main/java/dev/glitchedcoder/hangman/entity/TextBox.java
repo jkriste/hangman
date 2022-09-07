@@ -42,13 +42,13 @@ public class TextBox extends Entity {
         MAX_LINES = 3;
         MAX_CHARACTERS_PER_LINE = 26;
         MAX_CHARACTERS = (byte) (MAX_LINES * MAX_CHARACTERS_PER_LINE);
-        Config config = Config.getConfig();
-        SPACE_BETWEEN_PORTRAIT = (byte) (10 * config.getResolution().getScalar());
-        SPACE_BETWEEN_BOX = (byte) (30 * config.getResolution().getScalar());
+        double scalar = Config.getConfig().getResolution().getScalar();
+        SPACE_BETWEEN_PORTRAIT = (byte) (10 * scalar);
+        SPACE_BETWEEN_BOX = (byte) (30 * scalar);
         BOX_SCALE = 7;
         TEXT_SCALE = 2;
-        PORTRAIT_SCALE = 3.5;
-        LINE_HEIGHT = (short) (32 * config.getResolution().getScalar());
+        PORTRAIT_SCALE = 3.5D;
+        LINE_HEIGHT = (short) (32 * scalar);
     }
 
     @ParametersAreNonnullByDefault
@@ -209,7 +209,7 @@ public class TextBox extends Entity {
                 String word = words[index];
                 if (builder.length() + word.length() > MAX_CHARACTERS_PER_LINE)
                     break;
-                builder.append(word).append(" ");
+                builder.append(word).append(' ');
             }
             if (builder.length() == 0) {
                 this.lineImages[b] = null;

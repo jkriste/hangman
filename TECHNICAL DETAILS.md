@@ -9,6 +9,13 @@ This game is meant to portray a sort of arcade-like feel, with a story-driven op
 Other than the dependencies, the only standard library features that this game uses is JFrame (part of [Swing](https://en.wikipedia.org/wiki/Swing_(Java))) and Canvas (part of [AWT](https://en.wikipedia.org/wiki/Abstract_Window_Toolkit)).
 The rest of this game is built from scratch, including [Scenes](https://github.com/glitchedcoder/hangman/blob/main/src/main/java/dev/glitchedcoder/hangman/window/Scene.java) and [Entities](https://github.com/glitchedcoder/hangman/blob/main/src/main/java/dev/glitchedcoder/hangman/entity/Entity.java).
 
+**Note**: Some, if not most, of the code in this project uses [runtime verification](https://en.wikipedia.org/wiki/Runtime_verification).
+Check the [Validator](src/main/java/dev/glitchedcoder/hangman/util/Validator.java) class in this project to view the methods that are used.
+The reasoning for this type of approach is that, although I have tried my best to make sure there are close to zero errors during the development of this project, I am not infallible.
+Runtime verification helps me assure that everything is running smoothly.
+If not, then I have a reason as to what went wrong where.
+No unit tests needed.
+
 ### Tech Stack
 
 **Language**: Java

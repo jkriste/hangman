@@ -19,6 +19,12 @@ public class TextInput extends Entity {
     private final Rectangle bounds;
     private final List<CharacterInput> list;
 
+    private static final double DEFAULT_SCALE = 5;
+
+    public TextInput(Scene scene, int length, boolean spaces) {
+        this(scene, length, DEFAULT_SCALE, spaces);
+    }
+
     public TextInput(Scene scene, int length, double scalar, boolean spaces) {
         super(scene, EntityType.TEXT_INPUT);
         this.length = (byte) Validator.constrain(length, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH);

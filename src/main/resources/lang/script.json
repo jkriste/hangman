@@ -1,6 +1,27 @@
 {
+  "strings": {
+    "menu.generic.exit": "Exit",
+    "menu.generic.back": "Back",
+    "menu.key.prompt": "Please Input Your API Key",
+    "menu.key.fail": "Failed to Auth Your API Key",
+    "menu.main.single": "Singleplayer",
+    "menu.main.multi": "Multiplayer",
+    "menu.main.settings": "Preferences",
+    "menu.multi.prompt": "User 1 Select Word Length",
+    "menu.multi.next": "Next",
+    "menu.pause.resume": "Resume",
+    "menu.pause.main": "Main Menu",
+    "menu.pref.changekey": "Change API Key",
+    "menu.pref.apply": "Apply & Restart",
+    "menu.single.story": "Story Mode",
+    "menu.single.free": "Free Mode",
+    "menu.word.prompt": "User 1 Input Word",
+    "menu.word.submit": "Submit",
+    "story.end.win": "Game Won",
+    "story.end.loss": "Game Over"
+  },
   "lines": {
-    "introduction_sfl": [
+    "story.intro.sfl": [
       "Hello, prisoner 8662161075.",
       "Perhaps you have forgotten why you are here...",
       "Allow me to remind you.",
@@ -11,7 +32,7 @@
       "Well, let's not get ahead of ourselves.",
       "Allow me to introduce myself."
     ],
-    "introduction_nsfl": [
+    "story.intro.nsfl": [
       "Hello, prisoner 6503087300.",
       "Perhaps you have forgotten why you are here...",
       "Allow me to remind you.",
@@ -21,14 +42,14 @@
       "Well either way, you're here for a good reason.",
       "Allow me to introduce myself."
     ],
-    "introduction_no_tutorial" : [
+    "story.intro.skiptutorial" : [
       "They call me the Executioner.",
       "Maybe by the end of this, you'll know why...",
       "The courts have given me jurisdiction to decide your fate.",
       "I want to play a game.",
       "Let's begin, shall we?"
     ],
-    "introduction_tutorial": [
+    "story.intro.tutorial": [
       "They call me the Executioner.",
       "Maybe by the end of this, you'll know why...",
       "The courts have given me jurisdiction to decide your fate.",
@@ -43,11 +64,11 @@
       "So try to be strategic about it.",
       "Let's begin, shall we?"
     ],
-    "phase_one_no_tutorial": [
+    "story.p1.skiptutorial": [
       "You should be familiar, right?",
       "You have the floor."
     ],
-    "phase_one_tutorial": [
+    "story.p1.tutorial": [
       "Let's start with an introduction to the layout.",
       "In the very center is the text input.",
       "Just below that is the action selector.",
@@ -63,19 +84,19 @@
       "...but if it's not in the right spot, it doesn't count.",
       "This isn't Wordle."
     ],
-    "phase_two": [
+    "story.p2": [
       "Well done, I didn't think you had it in you.",
       "I don't think you've earned your freedom just yet...",
       "Let's keep going."
     ],
-    "phase_three": [
+    "story.p3": [
       "Okay, now you're starting to become a nuisance...",
       "You know what? Let's switch it up.",
       "You have 90 seconds to get this last word.",
       "If you do not find the word in the given time, you lose.",
       "This one's for all the marbles...so make it count."
     ],
-    "game_lost_sfl": [
+    "story.lose.sfl": [
       "The word was %word%.",
       "You've lost...",
       "Did I go too hard on you?",
@@ -83,7 +104,7 @@
       "You know the rules, and so do I.",
       "I think you know what comes next..."
     ],
-    "game_lost_nsfl": [
+    "story.lose.nsfl": [
       "The word was %word%.",
       "You've lost...",
       "I think this calls for a celebration.",
@@ -91,24 +112,28 @@
       "The darkest pit of hell has opened up to swallow you whole...",
       "Don't keep the devil waiting."
     ],
-    "game_won_sfl": [
+    "story.win.sfl": [
       "Impressive... I didn't think it was possible.",
       "I'm a man of my word. You are now free to go.",
       "Although, I don't think it'll be long before I see you again.",
       "Farewell..."
     ],
-    "game_won_nsfl": [
+    "story.win.nsfl": [
       "Impossible...",
       "If you won't let me kill you, then I'll let the prison system do it.",
-      "With the jurisdiction of the courts...",
+      "With the jurisdiction of the court...",
       "I hereby sentence you to life in prison with no chance of parole.",
       "You could've made it easier on yourself if you just gave in...",
       "But you somehow think you're better off alive than dead.",
       "Either way, you're avoiding the inevitable.",
       "Good luck."
+    ],
+    "story.generic.alreadyGuessed": [
+      "You've already guessed the letter '%letter%'.",
+      "Maybe you should try something else..."
     ]
   },
-  "crimes_sfl": [
+  "crimes.sfl": [
     "Throwing an alligator through a drive thru window",
     "Trying to stop a hurricane with bullets",
     "Stealing all of the nuggets from McDonalds",
@@ -128,7 +153,7 @@
     "Telling someone your birthday wish",
     "Possessing a comically large spoon"
   ],
-  "crimes_nsfl": [
+  "crimes.nsfl": [
     "Kidnapping children from an orphanage",
     "Robbing a blind, old lady",
     "Eating a man's face on a subway train",
@@ -137,6 +162,8 @@
     "Taking bribes while being a government official",
     "Scamming the elderly",
     "Committing hate crimes under the guise of religion",
-    "Sending men to war under false pretenses"
+    "Sending men to war under false pretenses",
+    "Being a member of an extremist group",
+    "Shooting up a school"
   ]
 }

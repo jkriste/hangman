@@ -30,6 +30,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class Scene implements KeyEventDispatcher {
 
     private final UUID id;
+    private volatile boolean focused;
+    private volatile boolean disposed;
+    private volatile boolean initialized;
     private final AtomicReference<Color> bg;
     private final List<Renderable> renderables;
     protected final ScheduledExecutorService executor = Hangman.getExecutor();
@@ -44,14 +47,43 @@ public abstract class Scene implements KeyEventDispatcher {
     }
 
     /**
-     * Called when the {@link Scene} is being loaded.
+     * Called by {@link Window the window}, this method
+     * helps the {@link Scene} to know which dimensions
+     * to render the background and any other size-dependent
+     * {@link Renderable} objects.
+     * <br />
+     * The given width and height should account for insets.
+     *
+     * @param d The dimension of the {@link Window} minus insets.
      */
-    protected abstract void onLoad();
+    static void adjustDimensions(Dimension d) {
+        dimension = d;
+    }
 
     /**
-     * Called when the {@link Scene} is being unloaded.
+     * Called when the {@link Scene} is being initialized.
+     * <br />
+     * This method is strictly for <b>first-time</b> initialization.
+     * <br />
+     * For {@link Scene}s that have already been initialized but
+     * were {@link #onUnload() unloaded}, {@link #onLoad()} will
+     * be called instead of this method.
+     *
+     * @see #hasInitialized()
      */
-    protected abstract void onUnload();
+    protected abstract void onInit();
+
+    /**
+     * Called when the {@link Scene} is being disposed.
+     * <br />
+     * This method is strictly for <b>deletion</b>.
+     * <br />
+     * Once a {@link Scene} is disposed, it cannot be
+     * {@link #onLoad() reloaded}.
+     *
+     * @see #isDisposed()
+     */
+    protected abstract void onDispose();
 
     /**
      * Gets the {@link Set<Key>}s that the {@link Scene} is listening for.
@@ -62,6 +94,26 @@ public abstract class Scene implements KeyEventDispatcher {
      * @return The {@link Set<Key>}s that the {@link Scene} is listening for.
      */
     protected abstract Set<Key> getKeyListeners();
+
+    /**
+     * Called after {@link #onInit() initialization}
+     * or when the {@link Scene} is being reloaded.
+     * <br />
+     * This method should not be creating any {@link Renderable}
+     * objects that are vital to the {@link Scene}.
+     */
+    protected void onLoad() {
+    }
+
+    /**
+     * Called before {@link #onDispose() disposal}
+     * or when the {@link Scene} is being unloaded.
+     * <br />
+     * This method should not dispose any {@link Renderable}
+     * objects that are vital to the {@link Scene}.
+     */
+    protected void onUnload() {
+    }
 
     /**
      * Called when a {@link Key} that is in
@@ -105,13 +157,13 @@ public abstract class Scene implements KeyEventDispatcher {
      */
     protected void tick(byte count) {
         for (Renderable r : this.renderables) {
-            if (!r.shouldDraw())
-                continue;
             if (r.shouldRemove()) {
                 r.remove();
                 renderables.remove(r);
                 continue;
             }
+            if (!r.shouldDraw())
+                continue;
             r.tick(count);
         }
     }
@@ -137,14 +189,35 @@ public abstract class Scene implements KeyEventDispatcher {
      * <br />
      * Gets the {@link View} of the {@link Window} and
      * passes the given {@link Scene} onto it.
+     * <br />
+     * Will automatically {@link Scene#onDispose() dispose}
+     * the last {@link Scene}.
      *
      * @param scene The scene to set.
+     * @see #setScene(Scene, boolean) 
      */
     protected final void setScene(@Nonnull Scene scene) {
+        this.setScene(scene, true);
+    }
+
+    /**
+     * A shortcut for setting the current {@link Scene}.
+     * <br />
+     * Gets the {@link View} of the {@link Window} and
+     * passes the given {@link Scene} onto it.
+     * <br />
+     * If {@code disposeLast} is {@code true}, all
+     * {@link #renderables} will be cleared.
+     *
+     * @param scene The scene to set.
+     * @param disposeLast True to dispose this scene, false otherwise.
+     */
+    protected final void setScene(@Nonnull Scene scene, boolean disposeLast) {
         Validator.requireNotNull(scene, "Given scene is null!");
         View view = Hangman.getWindow().getView();
-        view.setScene(scene);
-        this.renderables.clear();
+        view.setScene(scene, disposeLast);
+        if (disposeLast)
+            this.renderables.clear();
     }
 
     /**
@@ -209,6 +282,32 @@ public abstract class Scene implements KeyEventDispatcher {
     }
 
     /**
+     * Checks whether the {@link Scene} has been {@link #onInit() initialized}.
+     * <br />
+     * A {@link Scene} will only be initialized once, when it is initially being loaded by the {@link View}.
+     * After being {@link #onInit() initialized}, only {@link #onLoad()} and {@link #onUnload()} will be
+     * called until the eventual {@link #onDispose() disposal} of the {@link Scene}.
+     *
+     * @return True if the {@link Scene} has been {@link #onInit() initialized}, false otherwise.
+     * @see #onInit()
+     */
+    public final boolean hasInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Checks whether the {@link Scene} has been {@link #onDispose() disposed}.
+     * <br />
+     * If {@code true}, the {@link Scene} cannot be {@link View#setScene(Scene, boolean) reset}.
+     *
+     * @return True if the {@link Scene} has been {@link #onDispose() disposed}, false otherwise.
+     * @see #onDispose()
+     */
+    public final boolean isDisposed() {
+        return disposed;
+    }
+
+    /**
      * Gets the {@link Color} for the background of the {@link Scene}.
      * <br />
      * Used by {@link View} to render the background pre-{@link #draw(Graphics2D)}.
@@ -243,6 +342,40 @@ public abstract class Scene implements KeyEventDispatcher {
         return Collections.unmodifiableList(renderables);
     }
 
+    /**
+     * Checks whether the {@link Window} or {@link View} is focused.
+     * <br />
+     * This method acts for both the {@link Window} and the {@link View}
+     * as both of them are essentially the same component.
+     * <br />
+     * A shortcut for checking if the {@link View} is focused.
+     *
+     * @return True if the {@link Window} or {@link View} is focused, false otherwise.
+     */
+    public final boolean isFocused() {
+        return Hangman.getWindow().getView().isFocused();
+    }
+
+    /**
+     * Used internally to set the {@link Scene} as initialized.
+     * <br />
+     * Called after {@link #onInit()}.
+     */
+    final void markInitialized() {
+        this.initialized = true;
+        Hangman.debug("Scene '{}' (ID: {}) marked as initialized.", this.getClass().getSimpleName(), this.id);
+    }
+
+    /**
+     * Used internally to set the {@link Scene} as disposed.
+     * <br />
+     * Called before {@link #onDispose()}.
+     */
+    final void markDisposed() {
+        this.disposed = true;
+        Hangman.debug("Scene '{}' (ID: {}) marked as disposed.", this.getClass().getSimpleName(), this.id);
+    }
+
     @Override
     public final boolean dispatchKeyEvent(KeyEvent event) {
         if (getKeyListeners().isEmpty())
@@ -255,19 +388,5 @@ public abstract class Scene implements KeyEventDispatcher {
             }
         }
         return false;
-    }
-
-    /**
-     * Called by {@link Window the window}, this method
-     * helps the {@link Scene} to know which dimensions
-     * to render the background and any other size-dependent
-     * {@link Renderable} objects.
-     * <br />
-     * The given width and height should account for insets.
-     *
-     * @param d The dimension of the {@link Window} minus insets.
-     */
-    static void adjustDimensions(Dimension d) {
-        dimension = d;
     }
 }

@@ -2,6 +2,7 @@ package dev.glitchedcoder.hangman.scene.menu;
 
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.Location;
+import dev.glitchedcoder.hangman.json.Strings;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.util.Constants;
 import lombok.EqualsAndHashCode;
@@ -23,17 +24,7 @@ public class MultiplayerMenu extends Menu {
     public MultiplayerMenu(MainMenu parent) {
         this.parent = parent;
         this.components = new MenuComponent[COMPONENT_SIZE];
-        ScrollableIntMenuComponent length = new ScrollableIntMenuComponent(
-                this, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH, SCALAR
-        );
-        MenuComponent next = new MenuComponent(this, "Next", SCALAR);
-        MenuComponent back = new MenuComponent(this, "Back", SCALAR);
-        components[0] = length;
-        components[1] = next;
-        components[2] = back;
-        next.onSelect(() -> setScene(new WordSelectionMenu(this, length.getSelected().byteValue())));
-        back.onSelect(() -> setScene(parent));
-        BufferedImage headerText = new TexturePreprocessor("User 1 select word length")
+        BufferedImage headerText = new TexturePreprocessor(Strings.MULTI_PROMPT)
                 .scale(3)
                 .color(Color.WHITE)
                 .removeBackground()
@@ -58,11 +49,27 @@ public class MultiplayerMenu extends Menu {
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
+    protected void onInit() {
+        ScrollableIntMenuComponent length = new ScrollableIntMenuComponent(
+                this, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH, SCALAR
+        );
+        MenuComponent next = new MenuComponent(this, Strings.NEXT, SCALAR);
+        MenuComponent back = new MenuComponent(this, Strings.MENU_BACK, SCALAR);
+        components[0] = length;
+        components[1] = next;
+        components[2] = back;
+        next.onSelect(() -> setScene(new WordSelectionMenu(this, length.getSelected()), false));
+        back.onSelect(() -> setScene(parent));
+        super.onInit();
         autoCenter();
         addRenderable(header);
-        header.setLocation(Location.topCenter(header.getBounds()));
+        header.setLocation(Location::topCenter);
         header.spawn();
+    }
+
+    @Override
+    protected void onDispose() {
+        super.onDispose();
+        header.dispose();
     }
 }
