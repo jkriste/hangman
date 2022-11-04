@@ -1,10 +1,10 @@
 package dev.glitchedcoder.hangman.util;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.json.Config;
-import dev.glitchedcoder.hangman.json.Word;
+import dev.glitchedcoder.hangman.json.Words;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
@@ -24,8 +24,8 @@ import java.util.Random;
 public final class ApiRequest {
 
     private static final int OK_STATUS = 200;
-    private static final Random RANDOM = new Random();
     private static final Config CONFIG = Config.getConfig();
+    private static final Random RANDOM = Hangman.getRandom();
 
     private ApiRequest() {
     }
@@ -97,11 +97,11 @@ public final class ApiRequest {
     }
 
     /**
-     * Requests a {@link Word} from the API.
+     * Requests a {@link Words} from the API.
      * <br />
      * This method communicates with the {@link Constants#API_URL API}
      * over the web, so an internet connection is required in order
-     * for this method to successfully execute/return a valid {@link Word}.
+     * for this method to successfully execute/return a valid {@link Words}.
      * <br />
      * In very rare circumstances, it may be possible for this
      * method to return {@code null} even when the stored
@@ -110,10 +110,9 @@ public final class ApiRequest {
      * to use your own API key, as to not ratelimit others.
      *
      * @param length The length of the word to request.
-     * @return A {@link Word} from the API, or rarely {@code null}.
+     * @return A {@link Words} from the API, or rarely {@code null}.
      */
     public static String requestWord(int length) {
-        Gson gson = Constants.GSON;
         length = Validator.constrain(length, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH);
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             // build URI

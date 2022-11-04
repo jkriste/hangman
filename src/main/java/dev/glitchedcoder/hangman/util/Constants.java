@@ -13,6 +13,7 @@ public final class Constants {
 
     public static final File JAR;
     public static final Gson GSON;
+    public static final String WORDS;
     public static final String SCRIPT;
     public static final String API_URL;
     public static final File CONFIG_FILE;
@@ -64,6 +65,7 @@ public final class Constants {
                 "&&", "java", "-jar", JAR.getAbsolutePath()
         );
         SCRIPT = "/lang/script.json";
+        WORDS = "/lang/words.json";
     }
 
     private Constants() {

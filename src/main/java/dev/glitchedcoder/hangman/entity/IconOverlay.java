@@ -191,7 +191,6 @@ public class IconOverlay extends Entity {
                 BufferedImage icon = new TexturePreprocessor(i != null ? i.getTexture() : Texture.BLANK_ICON)
                         .color(color)
                         .scale(scale)
-                        .removeBackground()
                         .build();
                 if (image == null)
                     image = icon;

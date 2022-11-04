@@ -71,7 +71,14 @@ public final class Config {
      * new instance of Config with the default values:
      * <br />
      * {@code
-     *      { "nsfl": "OFF", "apiKey": "", "resolution": "P576" }
+     *      {
+     *          "nsfl": "OFF",
+     *          "mode": "ONLINE",
+     *          "debug": "DEBUG_OFF",
+     *          "playedBefore": false,
+     *          "apiKey": "",
+     *          "resolution": "P576"
+     *      }
      * }
      * <br />
      * If the config file exists, it will be loaded as the class instance.
@@ -141,10 +148,20 @@ public final class Config {
         return nsfl == null ? NSFL.OFF : nsfl;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public Mode getMode() {
         return mode == null ? Mode.ONLINE : mode;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     @Nonnull
     public Debug getDebug() {
         return debug == null ? Debug.DEBUG_OFF : debug;
@@ -210,11 +227,21 @@ public final class Config {
         this.nsfl = nsfl;
     }
 
+    /**
+     *
+     *
+     * @param mode
+     */
     public void setMode(@Nonnull Mode mode) {
         Validator.requireNotNull(mode, "Given mode is null!");
         this.mode = mode;
     }
 
+    /**
+     *
+     *
+     * @param debug
+     */
     public void setDebug(@Nonnull Debug debug) {
         Validator.requireNotNull(debug, "Given Debug is null!");
         this.debug = debug;

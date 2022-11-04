@@ -2,6 +2,7 @@ package dev.glitchedcoder.hangman;
 
 import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.json.Script;
+import dev.glitchedcoder.hangman.json.Words;
 import dev.glitchedcoder.hangman.scene.Splash;
 import dev.glitchedcoder.hangman.util.Constants;
 import dev.glitchedcoder.hangman.util.Validator;
@@ -12,6 +13,7 @@ import dev.glitchedcoder.hangman.window.Window;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -19,11 +21,16 @@ import java.util.concurrent.TimeUnit;
 public final class Hangman {
 
     private static Window window;
+    private static Random random;
     private static ScheduledExecutorService executor;
 
     public static void main(String[] args) {
         executor = Executors.newSingleThreadScheduledExecutor();
+        random = new Random();
+        Validator.enable();
         Config.loadConfig();
+        if (!Config.getConfig().getMode().isOnline())
+            Words.loadWords();
         debug("Loading script...");
         Script.loadScript();
         debug("Setting system property 'sun.java2d.opengl' to 'true'...");
@@ -100,6 +107,10 @@ public final class Hangman {
 
     public static Window getWindow() {
         return window;
+    }
+
+    public static Random getRandom() {
+        return random;
     }
 
     public static ScheduledExecutorService getExecutor() {

@@ -1,6 +1,8 @@
 package dev.glitchedcoder.hangman.window;
 
 import dev.glitchedcoder.hangman.Hangman;
+import dev.glitchedcoder.hangman.entity.Entity;
+import dev.glitchedcoder.hangman.entity.Location;
 import dev.glitchedcoder.hangman.entity.RenderPriority;
 import dev.glitchedcoder.hangman.entity.Renderable;
 import dev.glitchedcoder.hangman.json.Config;
@@ -13,12 +15,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
+import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,11 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Acts as the level/scene being displayed in the {@link View}.
  */
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 public abstract class Scene implements KeyEventDispatcher {
 
-    private final UUID id;
-    private volatile boolean focused;
     private volatile boolean disposed;
     private volatile boolean initialized;
     private final AtomicReference<Color> bg;
@@ -41,7 +41,6 @@ public abstract class Scene implements KeyEventDispatcher {
     protected static final Config config = Config.getConfig();
 
     protected Scene() {
-        this.id = UUID.randomUUID();
         this.bg = new AtomicReference<>(Color.BLACK);
         this.renderables = new CopyOnWriteArrayList<>();
     }
@@ -179,8 +178,16 @@ public abstract class Scene implements KeyEventDispatcher {
      */
     protected void draw(Graphics2D graphics) {
         for (Renderable r : this.renderables) {
-            if (r.shouldDraw())
-                r.draw(graphics);
+            if (!r.shouldDraw())
+                continue;
+            r.draw(graphics);
+            if (r instanceof Entity) {
+                Entity entity = (Entity) r;
+                graphics.setColor(Color.GREEN);
+                Location location = entity.getLocation();
+                Rectangle bounds = entity.getBounds();
+                graphics.drawRect(location.getX(), location.getY(), bounds.width, bounds.height);
+            }
         }
     }
 
@@ -273,15 +280,6 @@ public abstract class Scene implements KeyEventDispatcher {
     }
 
     /**
-     * Gets the {@link UUID} of the {@link Scene}.
-     *
-     * @return The {@link UUID} of the {@link Scene}.
-     */
-    public final UUID getId() {
-        return id;
-    }
-
-    /**
      * Checks whether the {@link Scene} has been {@link #onInit() initialized}.
      * <br />
      * A {@link Scene} will only be initialized once, when it is initially being loaded by the {@link View}.
@@ -363,7 +361,7 @@ public abstract class Scene implements KeyEventDispatcher {
      */
     final void markInitialized() {
         this.initialized = true;
-        Hangman.debug("Scene '{}' (ID: {}) marked as initialized.", this.getClass().getSimpleName(), this.id);
+        Hangman.debug("Scene '{}' marked as initialized.", this.getClass().getSimpleName());
     }
 
     /**
@@ -373,7 +371,7 @@ public abstract class Scene implements KeyEventDispatcher {
      */
     final void markDisposed() {
         this.disposed = true;
-        Hangman.debug("Scene '{}' (ID: {}) marked as disposed.", this.getClass().getSimpleName(), this.id);
+        Hangman.debug("Scene '{}' marked as disposed.", this.getClass().getSimpleName());
     }
 
     @Override

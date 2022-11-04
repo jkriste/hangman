@@ -38,7 +38,8 @@ public class MainMenu extends Menu {
                 .scale(4)
                 .build();
         BufferedImage version = new TexturePreprocessor("v" + Constants.VERSION)
-                .scale(1.25)
+                .removeBackground()
+                .scale(1.4)
                 .build();
         this.hands = new FixedTexture(this, hands);
         this.table = new FixedTexture(this, table);

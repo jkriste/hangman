@@ -48,7 +48,7 @@ public class TextBox extends Entity {
         BOX_SCALE = 7;
         TEXT_SCALE = 2;
         PORTRAIT_SCALE = 3.5D;
-        LINE_HEIGHT = (short) (32 * scalar);
+        LINE_HEIGHT = (short) (36 * scalar);
     }
 
     @ParametersAreNonnullByDefault

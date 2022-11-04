@@ -13,6 +13,7 @@ import dev.glitchedcoder.hangman.entity.TextBox;
 import dev.glitchedcoder.hangman.entity.TextInput;
 import dev.glitchedcoder.hangman.json.Script;
 import dev.glitchedcoder.hangman.json.ScriptSection;
+import dev.glitchedcoder.hangman.json.Words;
 import dev.glitchedcoder.hangman.scene.IconLayout;
 import dev.glitchedcoder.hangman.scene.menu.PauseMenu;
 import dev.glitchedcoder.hangman.ui.Portrait;
@@ -81,10 +82,12 @@ public abstract class BaseGame extends Scene {
     /**
      * Requests a word from either the {@link ApiRequest API} or pulls one locally.
      * <br />
+     * If the given {@code length} is {@code -1}, a random word length between
+     * {@link Constants#MIN_WORD_LENGTH} and {@link Constants#MAX_WORD_LENGTH}
+     * will be generated and a word with that length will be picked at random.
      *
-     *
-     * @param length
-     * @return
+     * @param length The length of the word, or -1 if random length.
+     * @return A word from either the {@link ApiRequest API} or one pulled locally.
      */
     protected static String requestWord(int length) {
         if (length == -1)
@@ -94,8 +97,8 @@ public abstract class BaseGame extends Scene {
         String s;
         if (config.getMode().isOnline())
             s = ApiRequest.requestWord(length);
-        else // todo
-            s = "blueberry";
+        else
+            s = Words.randomWord(length);
         return s;
     }
 

@@ -1,5 +1,6 @@
 package dev.glitchedcoder.hangman.entity;
 
+import dev.glitchedcoder.hangman.Hangman;
 import dev.glitchedcoder.hangman.ui.Texture;
 import dev.glitchedcoder.hangman.ui.TexturePreprocessor;
 import dev.glitchedcoder.hangman.window.Scene;
@@ -20,7 +21,7 @@ public class LightFixture extends Entity {
     private final BufferedImage lightOff;
 
     private static final double DEFAULT_SCALE = 4.1;
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = Hangman.getRandom();
 
     public LightFixture(Scene scene, byte flickerChance) {
         this(scene, flickerChance, DEFAULT_SCALE);

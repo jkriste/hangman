@@ -216,13 +216,19 @@ public abstract class Menu extends Scene {
     protected final void autoCenter() {
         MenuComponent[] components = getComponents();
         byte yOffset = getComponentSpacing();
-        Rectangle totalSize = new Rectangle(0, (components[0].getBounds().height + yOffset) * components.length);
+        int totalY = 0;
+        for (MenuComponent component : components) {
+            totalY += component.getBounds().height;
+        }
+        Rectangle totalSize = new Rectangle(0, totalY + (yOffset * components.length));
         Location centered = Location.center(totalSize);
-        for (byte b = 0; b < components.length; b++) {
-            Rectangle bounds = components[b].getBounds();
+        int currentY = centered.getY();
+        for (MenuComponent component : components) {
+            Rectangle bounds = component.getBounds();
             Location loc = Location.center(bounds);
-            loc.setY(centered.getY() + (b * (bounds.height + yOffset)) + getComponentYOffset());
-            components[b].setLocation(loc);
+            loc.setY(currentY + yOffset + getComponentYOffset());
+            component.setLocation(loc);
+            currentY += bounds.height + yOffset;
         }
     }
 

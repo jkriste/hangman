@@ -58,7 +58,7 @@ public final class Script {
             return;
         Gson gson = Constants.GSON;
         InputStream in = Hangman.class.getResourceAsStream(Constants.SCRIPT);
-        Validator.requireNotNull(in, "Could not load script!");
+        Validator.requireNotNull(in, "Could not load {}!", Constants.SCRIPT);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         instance = gson.fromJson(reader, Script.class);
     }

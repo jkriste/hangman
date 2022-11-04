@@ -1,6 +1,5 @@
 package dev.glitchedcoder.hangman.entity;
 
-import dev.glitchedcoder.hangman.json.Config;
 import dev.glitchedcoder.hangman.util.Validator;
 import dev.glitchedcoder.hangman.window.Window;
 import lombok.EqualsAndHashCode;
@@ -16,7 +15,6 @@ public final class Location {
     private short y;
 
     private static Dimension dimension;
-    private static final Config CONFIG = Config.getConfig();
 
     public Location() {
         this(0, 0);
@@ -107,7 +105,7 @@ public final class Location {
      * <br />
      * The coordinate calculations can be summed by:
      * <br />
-     * {@code (0, (HEIGHT / 2) - (box.height / 2)}.
+     * {@code (0, (HEIGHT / 2) - (box.height / 2))}.
      * <br />
      * Corresponds to the center left of the window.
      *

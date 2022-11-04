@@ -21,6 +21,20 @@ public final class KeySelector {
         this.selectedKeys = new HashSet<>();
     }
 
+    private KeySelector(Key key) {
+        this.selectedKeys = new HashSet<>();
+        this.selectedKeys.add(key);
+    }
+
+    private KeySelector(Key[] keys) {
+        this.selectedKeys = new HashSet<>();
+        Collections.addAll(this.selectedKeys, keys);
+    }
+
+    private KeySelector(Collection<Key> keys) {
+        this.selectedKeys = new HashSet<>(keys);
+    }
+
     /**
      * Creates a new {@link KeySelector} instance.
      *
@@ -60,7 +74,7 @@ public final class KeySelector {
      * @param keys The keys to add to the set.
      * @return The current {@link KeySelector} instance.
      */
-    public KeySelector group(Key[] keys) {
+    public KeySelector group(@Nonnull Key[] keys) {
         Collections.addAll(this.selectedKeys, keys);
         return this;
     }
@@ -71,7 +85,7 @@ public final class KeySelector {
      * @param keys The keys to add to the set.
      * @return The current {@link KeySelector} instance.
      */
-    public KeySelector group(Collection<Key> keys) {
+    public KeySelector group(@Nonnull Collection<Key> keys) {
         this.selectedKeys.addAll(keys);
         return this;
     }
@@ -82,7 +96,7 @@ public final class KeySelector {
      * @param key The key to add.
      * @return The current {@link KeySelector} instance.
      */
-    public KeySelector with(Key key) {
+    public KeySelector with(@Nonnull Key key) {
         this.selectedKeys.add(key);
         return this;
     }

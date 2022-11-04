@@ -5,6 +5,7 @@ import dev.glitchedcoder.hangman.entity.FadeIn;
 import dev.glitchedcoder.hangman.entity.FadeOut;
 import dev.glitchedcoder.hangman.entity.FixedTexture;
 import dev.glitchedcoder.hangman.entity.Location;
+import dev.glitchedcoder.hangman.json.Words;
 import dev.glitchedcoder.hangman.scene.menu.MainMenu;
 import dev.glitchedcoder.hangman.ui.Mode;
 import dev.glitchedcoder.hangman.ui.Texture;
@@ -58,6 +59,7 @@ public class Splash extends Scene {
         if (config.getMode().isOnline() && !ApiRequest.checkApi()) {
             Hangman.debug("Failed to contact the API, going offline...");
             config.setMode(Mode.OFFLINE);
+            Words.loadWords();
         }
         fadeOut.onFinish(() -> {
             if (config.getMode() == Mode.OFFLINE || ApiRequest.checkApiKey())

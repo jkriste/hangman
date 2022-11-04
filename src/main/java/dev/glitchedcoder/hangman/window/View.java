@@ -104,12 +104,12 @@ public final class View extends Canvas {
      */
     public synchronized void setScene(@Nonnull Scene scene, boolean disposeLast) {
         Validator.requireNotNull(scene, "Given scene is null!");
-        Validator.checkArgument(!scene.isDisposed(), "Given disposed scene '{}'!", scene.getId());
+        Validator.checkArgument(!scene.isDisposed(), "Given disposed scene '{}'!", scene.getClass().getSimpleName());
         Scene current = getScene();
         if (current != null) {
             Validator.requireNotEqual(current, scene);
             KEYBOARD_MANAGER.removeKeyEventDispatcher(current);
-            Hangman.debug("Unloading scene '{}' (ID: {}).", current.getClass().getSimpleName(), current.getId());
+            Hangman.debug("Unloading scene '{}'.", current.getClass().getSimpleName());
             current.onUnload();
             if (disposeLast) {
                 current.markDisposed();
@@ -122,7 +122,7 @@ public final class View extends Canvas {
             scene.onInit();
             scene.markInitialized();
         }
-        Hangman.debug("Loading scene '{}' (ID: {}).", scene.getClass().getSimpleName(), scene.getId());
+        Hangman.debug("Loading scene '{}'.", scene.getClass().getSimpleName());
         scene.onLoad();
     }
 
