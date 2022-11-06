@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.0</version>
+            <version>2.10</version>
             <scope>compile</scope>
         </dependency>
         <!-- Lombok -->
@@ -99,7 +99,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>dev.glitchedcoder.hangman.Hangman</mainClass>
+                            <mainClass>dev.jkriste.hangman.Hangman</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

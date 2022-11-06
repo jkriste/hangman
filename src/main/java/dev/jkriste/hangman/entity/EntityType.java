@@ -1,0 +1,18 @@
+package dev.jkriste.hangman.entity;
+
+public enum EntityType {
+
+    STATIC_TEXT,
+    MENU_COMPONENT,
+    TEXT_BOX,
+    FADE_IN,
+    FADE_OUT,
+    FIXED_TEXTURE,
+    CHARACTER_INPUT,
+    TEXT_INPUT,
+    ICON_OVERLAY,
+    LIGHT_FIXTURE,
+    SPRITE,
+    TIMER
+
+}
