@@ -193,10 +193,7 @@ public class IconOverlay extends Entity {
                         .color(color)
                         .scale(scale)
                         .build();
-                if (image == null)
-                    image = icon;
-                else
-                    image = TexturePreprocessor.stitch(image, icon);
+                image = image == null ? icon : TexturePreprocessor.stitch(image, icon);
             }
             this.images[b] = image;
         }

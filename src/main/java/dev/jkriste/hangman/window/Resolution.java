@@ -1,12 +1,15 @@
 package dev.jkriste.hangman.window;
 
+import dev.jkriste.hangman.scene.menu.ScrollableComponentOption;
 import dev.jkriste.hangman.ui.Texture;
 import dev.jkriste.hangman.ui.TexturePreprocessor;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents most, if not all, 16:9 aspect ratio resolutions.
  */
-public enum Resolution {
+public enum Resolution implements ScrollableComponentOption {
 
     P576("1024x576", 1024, 576, 1D),
     P648("1152x648", 1152, 648, 1.125),
@@ -66,8 +69,9 @@ public enum Resolution {
         return scalar;
     }
 
+    @Nonnull
     @Override
-    public String toString() {
+    public String getName() {
         return this.name;
     }
 }

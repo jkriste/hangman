@@ -3,6 +3,7 @@ package dev.jkriste.hangman.scene.menu;
 import dev.jkriste.hangman.entity.FixedTexture;
 import dev.jkriste.hangman.entity.Location;
 import dev.jkriste.hangman.json.Strings;
+import dev.jkriste.hangman.scene.mode.TimerPreset;
 import dev.jkriste.hangman.ui.TexturePreprocessor;
 import dev.jkriste.hangman.util.Constants;
 import lombok.EqualsAndHashCode;
@@ -19,7 +20,7 @@ public class MultiplayerMenu extends Menu {
     private final MenuComponent[] components;
 
     private static final byte SCALAR = 3;
-    private static final byte COMPONENT_SIZE = 3;
+    private static final byte COMPONENT_SIZE = 4;
 
     public MultiplayerMenu(MainMenu parent) {
         this.parent = parent;
@@ -53,12 +54,15 @@ public class MultiplayerMenu extends Menu {
         ScrollableIntMenuComponent length = new ScrollableIntMenuComponent(
                 this, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH, SCALAR
         );
+        ScrollableMenuComponent<TimerPreset> timer = new ScrollableMenuComponent<>(this, TimerPreset.values, SCALAR);
+        timer.setTitle("Timer:");
         MenuComponent next = new MenuComponent(this, Strings.NEXT, SCALAR);
         MenuComponent back = new MenuComponent(this, Strings.MENU_BACK, SCALAR);
         components[0] = length;
-        components[1] = next;
-        components[2] = back;
-        next.onSelect(() -> setScene(new WordSelectionMenu(this, length.getSelected()), false));
+        components[1] = timer;
+        components[2] = next;
+        components[3] = back;
+        next.onSelect(() -> setScene(new WordSelectionMenu(this, length.getSelected().getInt(), timer.getSelected()), false));
         back.onSelect(() -> setScene(parent));
         super.onInit();
         autoCenter();

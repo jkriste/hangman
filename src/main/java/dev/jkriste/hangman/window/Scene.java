@@ -249,7 +249,7 @@ public abstract class Scene implements KeyEventDispatcher {
      * @param renderables The renderable objects to add.
      */
     protected final void addRenderables(@Nonnull Renderable... renderables) {
-        Validator.requireNotNull(renderables, "Given renderables array is null!");
+        Validator.requireNotNull(renderables);
         if (renderables.length == 0)
             return;
         Collections.addAll(this.renderables, renderables);

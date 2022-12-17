@@ -140,13 +140,14 @@ public abstract class Menu extends Scene {
         addRenderables(components);
         spawnAll(components);
         // set a default icon overlay (based on the type of menu) if getLayout() is null
-        if (scrollableComponents) {
-            keys.add(Key.ARROW_RIGHT);
-            keys.add(Key.ARROW_LEFT);
-            overlay.setIcons(IconLayout.MENU_WITH_SCROLLABLE_COMPONENTS);
+        if (getLayout() == null) {
+            if (scrollableComponents) {
+                keys.add(Key.ARROW_RIGHT);
+                keys.add(Key.ARROW_LEFT);
+                overlay.setIcons(IconLayout.MENU_WITH_SCROLLABLE_COMPONENTS);
+            } else
+                overlay.setIcons(getParent() != null ? IconLayout.MENU_WITH_PARENT : IconLayout.MENU);
         } else
-            overlay.setIcons(getParent() != null ? IconLayout.MENU_WITH_PARENT : IconLayout.MENU);
-        if (getLayout() != null)
             overlay.setIcons(getLayout());
         overlay.setLocation(Location::bottomLeft);
         overlay.spawn();

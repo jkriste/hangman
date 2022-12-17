@@ -1,6 +1,10 @@
 package dev.jkriste.hangman.ui;
 
-public enum NSFL {
+import dev.jkriste.hangman.scene.menu.ScrollableComponentOption;
+
+import javax.annotation.Nonnull;
+
+public enum NSFL implements ScrollableComponentOption {
 
     ON("NSFL On"),
     OFF("NSFL Off");
@@ -17,8 +21,9 @@ public enum NSFL {
         return this == ON;
     }
 
+    @Nonnull
     @Override
-    public String toString() {
-        return name;
+    public String getName() {
+        return this.name;
     }
 }

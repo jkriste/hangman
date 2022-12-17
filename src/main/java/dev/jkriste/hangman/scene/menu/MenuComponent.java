@@ -31,12 +31,12 @@ import java.awt.image.BufferedImage;
  *     </tr>
  *     <tr>
  *         <td>Unfocused</td>
- *         <td>{@link Color#LIGHT_GRAY}</td>
+ *         <td>{@link Color#WHITE}</td>
  *         <td>Acts as the component being in an idle state.</td>
  *     </tr>
  *     <tr>
  *         <td>Focused</td>
- *         <td>{@link Color#WHITE}</td>
+ *         <td>{@code Color(202,46,12)}</td>
  *         <td>Acts as the component being hovered upon.</td>
  *     </tr>
  *     <tr>
@@ -80,6 +80,7 @@ public class MenuComponent extends Entity {
         this.text = text;
         this.focusable = true;
         setRenderPriority(RenderPriority.HIGH);
+        update();
     }
 
     @Override
@@ -205,7 +206,7 @@ public class MenuComponent extends Entity {
      * If {@link #onSelect(Runnable)} was not called or the
      * stored {@link Runnable} is {@code null}, this method
      * will do nothing. Otherwise, it will run the given
-     * {@link Runnable} <b>synchronous</b> to the game thread.
+     * {@link Runnable} <b>synchronous</b> to the running thread.
      */
     public void select() {
         if (onSelect != null)

@@ -51,7 +51,7 @@ public class SIntro extends BaseGame {
 
     @Override
     protected void onKeyPress(Key key) {
-        if (noKeyInput() || getState() != GameState.READING_TEXT)
+        if (noKeyInput())
             return;
         if (key == Key.ESCAPE)
             setScene(new PauseMenu(this), false);
@@ -62,11 +62,6 @@ public class SIntro extends BaseGame {
     @Override
     protected Portrait getPortrait() {
         return Portrait.UNKNOWN;
-    }
-
-    @Override
-    protected GameState getStartingState() {
-        return GameState.READING_TEXT;
     }
 
     private void onIntroFinish() {

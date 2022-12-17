@@ -69,10 +69,8 @@ public abstract class BaseGame extends Scene {
     protected static final Script script = Script.getScript();
 
     protected BaseGame(@Nullable String word) {
-        if (word == null && isPlayable()) {
-            int length = ApiRequest.randomWordLength();
-            word = Validator.requireNotNull(ApiRequest.requestWord(length));
-        }
+        if (word == null && isPlayable())
+            word = requestWord(-1);
         this.word = word;
         this.guesses = word == null ? -1 : (byte) ((26 - word.length()) * (2D / 3D));
         this.guessedLetters = isPlayable() ? new HashMap<>() : null;
@@ -94,12 +92,7 @@ public abstract class BaseGame extends Scene {
             length = ApiRequest.randomWordLength();
         else
             length = Validator.constrain(length, Constants.MIN_WORD_LENGTH, Constants.MAX_WORD_LENGTH);
-        String s;
-        if (config.getMode().isOnline())
-            s = ApiRequest.requestWord(length);
-        else
-            s = Words.randomWord(length);
-        return s;
+        return config.getMode().isOnline() ? ApiRequest.requestWord(length) : Words.randomWord(length);
     }
 
     @Override
@@ -395,20 +388,21 @@ public abstract class BaseGame extends Scene {
      * be reset to the {@link Location#bottomRight(Rectangle)}.
      *
      * @param texture The fixed texture to update.
-     * @param scale The scale of the image.
-     * @param color The color of the text.
+     * @param color   The color of the text.
      */
     @ParametersAreNonnullByDefault
-    protected final void updateGuesses(FixedTexture texture, double scale, Color color) {
-        Validator.requireNotNull(texture, "Given fixed texture is null!");
+    protected final void updateGuesses(@Nullable FixedTexture texture, Color color) {
         Validator.requireNotNull(color, "Given color is null!");
         this.guesses = (byte) Math.max(guesses, 0);
         BufferedImage guessText = new TexturePreprocessor(String.valueOf(guesses))
                 .color(color)
-                .scale(scale)
+                .scale(3)
                 .removeBackground()
                 .build();
-        texture.setImage(guessText);
+        if (texture != null)
+            texture.setImage(guessText);
+        else
+            texture = new FixedTexture(this, guessText);
         texture.setLocation(Location::bottomRight);
     }
 
@@ -422,23 +416,24 @@ public abstract class BaseGame extends Scene {
      * the order of the {@link #guessedLetters} will not be retained.
      *
      * @param texture The fixed texture to update.
-     * @param scale The scale of the image.
      */
-    @ParametersAreNonnullByDefault
-    protected final void updateGuessedLetters(FixedTexture texture, double scale) {
-        Validator.requireNotNull(texture, "Given fixed texture is null!");
+    protected final void updateGuessedLetters(@Nullable FixedTexture texture) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<Character, Boolean> entry : guessedLetters.entrySet()) {
             // recommended by sonarlint instead of !entry.getValue()
             if (Boolean.FALSE.equals(entry.getValue()))
                 builder.append(entry.getKey()).append(' ');
         }
-        BufferedImage image = new TexturePreprocessor(builder.toString().trim())
+        String letters = builder.length() == 0 ? " " : builder.toString().trim();
+        BufferedImage image = new TexturePreprocessor(letters)
                 .color(Color.RED)
                 .removeBackground()
-                .scale(scale)
+                .scale(2)
                 .build();
-        texture.setImage(image);
+        if (texture != null)
+            texture.setImage(image);
+        else
+            texture = new FixedTexture(this, image);
         texture.setLocation(Location::topCenter);
     }
 }

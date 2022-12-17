@@ -1,10 +1,12 @@
 package dev.jkriste.hangman.entity;
 
+import dev.jkriste.hangman.scene.mode.TimerPreset;
 import dev.jkriste.hangman.ui.TexturePreprocessor;
 import dev.jkriste.hangman.util.Validator;
 import dev.jkriste.hangman.window.Scene;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -23,11 +25,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Timer extends Entity {
 
+    private Color color1;
+    private Color color2;
     private Runnable onFinish;
-    private BufferedImage text;
+    private BufferedImage texture;
     private volatile boolean paused;
     private volatile boolean finished;
+    private volatile boolean interpolate;
 
+    private final int startTime;
     private final Rectangle bounds;
     private final AtomicInteger time;
     private final TexturePreprocessor preprocessor;
@@ -35,19 +41,21 @@ public class Timer extends Entity {
     private static final byte SEC_IN_MIN = 60;
     private static final double DEFAULT_SCALE = 2;
 
-    public Timer(Scene scene, Color color, int timeInSec) {
-        this(scene, color, DEFAULT_SCALE, timeInSec);
+    @ParametersAreNonnullByDefault
+    public Timer(Scene scene, Color color, TimerPreset preset) {
+        this(scene, color, DEFAULT_SCALE, preset);
     }
 
-    public Timer(Scene scene, Color color, double scale, int timeInSec) {
+    @ParametersAreNonnullByDefault
+    public Timer(Scene scene, Color color, double scale, TimerPreset preset) {
         super(scene, EntityType.TIMER);
-        Validator.checkArgument(timeInSec > 0, "Given timeInSec <= 0.");
-        this.time = new AtomicInteger(timeInSec);
-        this.preprocessor = new TexturePreprocessor(formatTime(timeInSec))
+        this.startTime = preset.getTimeInSec();
+        this.time = new AtomicInteger(preset.getTimeInSec());
+        this.preprocessor = new TexturePreprocessor(formatTime(preset.getTimeInSec()))
                 .scale(scale)
                 .color(color);
-        this.text = preprocessor.build();
-        this.bounds = new Rectangle(text.getWidth(), text.getHeight());
+        this.texture = preprocessor.build();
+        this.bounds = new Rectangle(texture.getWidth(), texture.getHeight());
         this.paused = true;
     }
 
@@ -59,7 +67,7 @@ public class Timer extends Entity {
     @Override
     protected void onUnload() {
         this.onFinish = null;
-        this.text = null;
+        this.texture = null;
     }
 
     @Override
@@ -74,7 +82,7 @@ public class Timer extends Entity {
         if (count == 0) {
             int newTime = time.getAndDecrement();
             if (newTime >= 0)
-                this.text = preprocessor.setText(formatTime(newTime)).build();
+                update(newTime);
             if (newTime == 0) {
                 this.paused = true;
                 this.finished = true;
@@ -86,7 +94,7 @@ public class Timer extends Entity {
 
     @Override
     public void draw(@Nonnull Graphics2D graphics) {
-        graphics.drawImage(this.text, getLocation().getX(), getLocation().getY(), null);
+        graphics.drawImage(this.texture, getLocation().getX(), getLocation().getY(), null);
     }
 
     /**
@@ -157,6 +165,24 @@ public class Timer extends Entity {
     }
 
     /**
+     * Sets the {@link Color} interpolation for the {@link Timer}.
+     * <br />
+     * As the timer counts down, the {@link Color} will transition
+     * from the given {@link Color} {@code c1} towards the other given
+     * {@link Color} {@code c2}.
+     *
+     * @param c1 The starting color.
+     * @param c2 The ending color.
+     * @see TexturePreprocessor#interpolateLinear(Color, Color, float)
+     */
+    @ParametersAreNonnullByDefault
+    public void setInterpolation(Color c1, Color c2) {
+        this.interpolate = true;
+        this.color1 = c1;
+        this.color2 = c2;
+    }
+
+    /**
      * Formats the given {@code timeLeft} into the following format:
      * <br />
      * {@code MIN:SEC}
@@ -174,5 +200,29 @@ public class Timer extends Entity {
                 .append(':')
                 .append(second < 10 ? '0' + second : second);
         return builder.toString();
+    }
+
+    /**
+     * Updates the {@link Timer}'s texture.
+     * <br />
+     * If a {@link #setInterpolation(Color, Color) interpolation} has been set,
+     * the {@link Color} will be calculated and set.
+     *
+     * @param timeLeft The time left.
+     * @see TexturePreprocessor#interpolateLinear(Color, Color, float)
+     */
+    private void update(int timeLeft) {
+        String formattedTime = formatTime(timeLeft);
+        if (!this.interpolate)
+            this.texture = this.preprocessor
+                    .setText(formattedTime)
+                    .build();
+        else {
+            Color color = TexturePreprocessor.interpolateLinear(color1, color2, (float) timeLeft / startTime);
+            this.texture = this.preprocessor
+                    .color(color)
+                    .setText(formattedTime)
+                    .build();
+        }
     }
 }

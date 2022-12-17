@@ -17,10 +17,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Represents a class instance of the
- * JSON object returned from the API.
- * Check out {@link ApiRequest}
- * to see how this is done.
+ * Represents a JSON to class instance
+ * of a collection of words from an internal
+ * JSON file. Words are sorted by length.
  */
 public final class Words {
 
@@ -59,9 +58,5 @@ public final class Words {
             words.add(s);
             this.mappedWords.put(length, words);
         }
-    }
-
-    private Map<Integer, List<String>> getMappedWords() {
-        return mappedWords;
     }
 }

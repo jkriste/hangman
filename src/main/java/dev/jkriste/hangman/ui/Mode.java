@@ -1,6 +1,10 @@
 package dev.jkriste.hangman.ui;
 
-public enum Mode {
+import dev.jkriste.hangman.scene.menu.ScrollableComponentOption;
+
+import javax.annotation.Nonnull;
+
+public enum Mode implements ScrollableComponentOption {
 
     ONLINE("Online Mode"),
     OFFLINE("Offline Mode");
@@ -17,8 +21,9 @@ public enum Mode {
         return this == ONLINE;
     }
 
+    @Nonnull
     @Override
-    public String toString() {
-        return name;
+    public String getName() {
+        return this.name;
     }
 }

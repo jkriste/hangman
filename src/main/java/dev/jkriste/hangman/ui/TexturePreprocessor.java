@@ -56,6 +56,44 @@ public final class TexturePreprocessor {
     }
 
     /**
+     * Stitches the two given {@link BufferedImage}s together.
+     * <br />
+     * Returns a new {@link BufferedImage} instance.
+     *
+     * @param i1 Image one.
+     * @param i2 Image two.
+     * @return A new {@link BufferedImage} representing i1+i2.
+     */
+    public static BufferedImage stitch(BufferedImage i1, BufferedImage i2) {
+        int newWidth = i1.getWidth() + i2.getWidth();
+        int newHeight = Math.max(i1.getHeight(), i2.getHeight());
+        BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = image.createGraphics();
+        graphics2D.drawImage(i1, 0, 0, null);
+        graphics2D.drawImage(i2, i1.getWidth(), 0, null);
+        graphics2D.dispose();
+        return image;
+    }
+
+    /**
+     * Takes two colors and creates a new color that represents an interpolation
+     * of the given {@link Color} {@code c1} and the other given {@link Color}
+     * {@code c2}. The higher the percentage, the more the method will lean towards
+     * {@code c1}, the lower the percentage, the more the method will lean towards {@code c2}.
+     *
+     * @param c1 The first color.
+     * @param c2 The second color.
+     * @param percentage The percentage to lean towards one color or another.
+     * @return A new color that represents a
+     */
+    public static Color interpolateLinear(Color c1, Color c2, float percentage) {
+        byte r = (byte) ((c1.getRed() * percentage) + (c2.getRed() * (1 - percentage)));
+        byte g = (byte) ((c1.getGreen() * percentage) + (c2.getGreen() * (1 - percentage)));
+        byte b = (byte) ((c1.getBlue() * percentage) + (c2.getBlue() * (1 - percentage)));
+        return new Color(r, g, b);
+    }
+
+    /**
      * Sets the text of the {@link TexturePreprocessor}.
      * <br />
      * If using the {@link TexturePreprocessor(Texture)} or
@@ -199,25 +237,5 @@ public final class TexturePreprocessor {
         return (0.2126 * color.getRed())
                 + (0.7152 * color.getGreen())
                 + (0.0722 * color.getBlue());
-    }
-
-    /**
-     * Stitches the two given {@link BufferedImage}s together.
-     * <br />
-     * Returns a new {@link BufferedImage} instance.
-     *
-     * @param i1 Image one.
-     * @param i2 Image two.
-     * @return A new {@link BufferedImage} representing i1+i2.
-     */
-    public static BufferedImage stitch(BufferedImage i1, BufferedImage i2) {
-        int newWidth = i1.getWidth() + i2.getWidth();
-        int newHeight = Math.max(i1.getHeight(), i2.getHeight());
-        BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = image.createGraphics();
-        graphics2D.drawImage(i1, 0, 0, null);
-        graphics2D.drawImage(i2, i1.getWidth(), 0, null);
-        graphics2D.dispose();
-        return image;
     }
 }

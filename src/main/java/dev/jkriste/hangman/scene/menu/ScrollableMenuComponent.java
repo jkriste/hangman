@@ -4,6 +4,8 @@ import dev.jkriste.hangman.util.Validator;
 import dev.jkriste.hangman.window.Scene;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 /**
  * Used to represent a selectable list of options.
@@ -15,14 +17,16 @@ import javax.annotation.Nonnull;
  *
  * @param <T> The type of selectable options.
  */
-public class ScrollableMenuComponent<T> extends MenuComponent {
+public class ScrollableMenuComponent<T extends ScrollableComponentOption> extends MenuComponent {
 
     private int index;
+    private String title;
+    private Consumer<T> consumer;
 
     private final T[] options;
 
     public ScrollableMenuComponent(Scene view, T[] options, double scale) {
-        super(view, '<' + options[0].toString() + '>', scale);
+        super(view, '<' + options[0].getName() + '>', scale);
         Validator.checkArgument(options.length > 1, "Scrollable component options length < 2 (length: {})", options.length);
         this.index = 0;
         this.options = options;
@@ -41,7 +45,7 @@ public class ScrollableMenuComponent<T> extends MenuComponent {
             --index;
         else
             index = (byte) (options.length - 1);
-        setText('<' + options[index].toString() + '>');
+        updateText();
     }
 
     /**
@@ -57,7 +61,7 @@ public class ScrollableMenuComponent<T> extends MenuComponent {
             ++index;
         else
             index = 0;
-        setText('<' + options[index].toString() + '>');
+        updateText();
     }
 
     /**
@@ -87,8 +91,66 @@ public class ScrollableMenuComponent<T> extends MenuComponent {
                 break;
             }
         }
-        Validator.checkArgument(index != -1, "Given type '{}' does not exist in the given options.", type.toString());
+        Validator.checkArgument(index != -1, "Given type '{}' does not exist in the given options.", type.getName());
         this.index = index;
-        setText('<' + options[index].toString() + '>');
+        updateText();
+    }
+
+    /**
+     * Performs the given {@link Consumer<T>} when selected.
+     * 
+     * @param consumer The action on selection.
+     * @see #onSelect(Runnable) 
+     */
+    public void onSelect(Consumer<T> consumer) {
+        this.consumer = consumer;
+    }
+
+    /**
+     *
+     *
+     * @return
+     */
+    @Nullable
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     *
+     *
+     * @param title
+     */
+    public void setTitle(@Nullable String title) {
+        this.title = title;
+        updateText();
+    }
+
+    /**
+     * Selects the {@link MenuComponent}.
+     * <br />
+     * If {@link #onSelect(Consumer)} was not called,
+     * it will check if {@link #onSelect(Runnable)} was
+     * called. If neither were called, this method will do nothing.
+     * If both were called, only the {@link #onSelect(Consumer)} will
+     * be ran.
+     * <br />
+     * Both methods will run <b>synchronously</b> to the running thread.
+     */
+    @Override
+    public void select() {
+        if (consumer != null) {
+            consumer.accept(getSelected());
+            return;
+        }
+        super.select();
+    }
+
+    private void updateText() {
+        StringBuilder builder = new StringBuilder("<");
+        if (this.title != null)
+            builder.append(this.title).append(' ');
+        builder.append(this.options[this.index].getName()).append('>');
+        setText(builder.toString());
     }
 }

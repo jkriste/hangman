@@ -11,18 +11,18 @@ import java.util.List;
 
 public enum Phase {
 
-    PHASE_ONE(true, 4),
-    PHASE_TWO(true, 9),
-    PHASE_THREE(false, 14);
+    PHASE_ONE(true, 4, 14),
+    PHASE_TWO(true, 9, 11),
+    PHASE_THREE(false, 14, 8);
 
-    private final byte guesses;
+    private final byte maxGuesses;
     private final byte wordLength;
     private final boolean hasNext;
 
-    Phase(boolean hasNext, int wordLength) {
+    Phase(boolean hasNext, int wordLength, int maxGuesses) {
         this.hasNext = hasNext;
         this.wordLength = (byte) wordLength;
-        this.guesses = (byte) ((26 - wordLength) * (2D / 3D));
+        this.maxGuesses = (byte) maxGuesses;
     }
 
     public List<String> getScript() {
@@ -49,8 +49,8 @@ public enum Phase {
         return wordLength;
     }
 
-    public byte getGuesses() {
-        return this.guesses;
+    public byte getMaxGuesses() {
+        return maxGuesses;
     }
 
     @Nullable

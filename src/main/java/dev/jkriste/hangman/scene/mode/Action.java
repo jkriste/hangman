@@ -1,6 +1,10 @@
 package dev.jkriste.hangman.scene.mode;
 
-public enum Action {
+import dev.jkriste.hangman.scene.menu.ScrollableComponentOption;
+
+import javax.annotation.Nonnull;
+
+public enum Action implements ScrollableComponentOption {
 
     GUESS_LETTER("Guess Letter", GameState.GUESSING_LETTER),
     GUESS_WORD("Guess Word", GameState.GUESSING_WORD),
@@ -21,8 +25,9 @@ public enum Action {
         return state;
     }
 
+    @Nonnull
     @Override
-    public String toString() {
+    public String getName() {
         return this.name;
     }
 }

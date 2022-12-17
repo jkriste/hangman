@@ -10,7 +10,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 public final class Validator {
 
-
     private Validator() {
     }
 
@@ -114,9 +113,11 @@ public final class Validator {
     /**
      * Requires all objects in the given array to be not null.
      *
-     * @param objects
+     * @param objects The objects to check.
      */
     public static void requireNotNull(Object[] objects) {
+        if (objects == null)
+            throw new IllegalArgumentException("Given array is null!");
         for (int i = 0; i < objects.length; i++) {
             if (objects[i] == null)
                 throw new IllegalArgumentException(format("Object at index {} is null!", i));

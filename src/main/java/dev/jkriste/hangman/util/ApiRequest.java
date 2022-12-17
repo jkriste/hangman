@@ -51,6 +51,7 @@ public final class ApiRequest {
             StatusLine status = response.getStatusLine();
             response.close();
             // check for OK_STATUS
+            Hangman.debug("API returned status code {}", status.getStatusCode());
             return status.getStatusCode() == OK_STATUS;
         } catch (IOException e) {
             // return false if any I/O exception is thrown

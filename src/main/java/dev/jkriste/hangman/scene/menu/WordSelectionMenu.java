@@ -6,6 +6,7 @@ import dev.jkriste.hangman.entity.Location;
 import dev.jkriste.hangman.entity.TextInput;
 import dev.jkriste.hangman.json.Strings;
 import dev.jkriste.hangman.scene.IconLayout;
+import dev.jkriste.hangman.scene.mode.TimerPreset;
 import dev.jkriste.hangman.ui.TexturePreprocessor;
 import dev.jkriste.hangman.window.key.Key;
 import lombok.EqualsAndHashCode;
@@ -21,13 +22,15 @@ public class WordSelectionMenu extends Menu {
     private FixedTexture header;
 
     private final TextInput input;
+    private final TimerPreset preset;
     private final MultiplayerMenu parent;
     private final MenuComponent[] components;
 
     private static final byte COMPONENT_SIZE = 2;
 
-    public WordSelectionMenu(MultiplayerMenu parent, int length) {
+    public WordSelectionMenu(MultiplayerMenu parent, int length, TimerPreset preset) {
         this.parent = parent;
+        this.preset = preset;
         this.input = new TextInput(this, length, 4, false);
         this.keys.addAll(Key.ALPHABETICAL_KEYS);
         this.keys.add(Key.BACKSPACE);

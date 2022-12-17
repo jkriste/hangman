@@ -1,6 +1,10 @@
 package dev.jkriste.hangman.ui;
 
-public enum Debug {
+import dev.jkriste.hangman.scene.menu.ScrollableComponentOption;
+
+import javax.annotation.Nonnull;
+
+public enum Debug implements ScrollableComponentOption {
 
     DEBUG_ON("Debug On"),
     DEBUG_OFF("Debug Off");
@@ -17,8 +21,9 @@ public enum Debug {
         return this == DEBUG_ON;
     }
 
+    @Nonnull
     @Override
-    public String toString() {
-        return name;
+    public String getName() {
+        return this.name;
     }
 }
